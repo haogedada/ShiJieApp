@@ -46,21 +46,20 @@ public class MainActivity extends BaseActivity<LoginPresenter> implements LoginV
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_login:
+                showLoadingView();
                 String name = et_name.getText().toString();
                 String password = et_password.getText().toString();
                 if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(password)) {
                     presenter.login(name, password);
                 }
+               // showContentView();
                 break;
             case R.id.bt_error:
-
-
+                showEmptyView();
                 break;
-
         }
 
     }
-
     @Override
     public void showNetworkError() {
 
@@ -74,7 +73,7 @@ public class MainActivity extends BaseActivity<LoginPresenter> implements LoginV
     @Override
     public void loginSuccess() {
        // Toast.makeText(this,"登录成功",Toast.LENGTH_SHORT).show();
-        showtoast("登录成功");
+        showToast("登录成功");
     }
 
     @Override
@@ -84,6 +83,16 @@ public class MainActivity extends BaseActivity<LoginPresenter> implements LoginV
 
     @Override
     public void onRefresh() {
+
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void hideLoading() {
 
     }
 }

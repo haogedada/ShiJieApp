@@ -1,8 +1,10 @@
 package com.shijie.base;
 
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -32,15 +34,29 @@ import butterknife.Unbinder;
  */
 public abstract class BaseActivity<P extends BasePresenter> extends AppCompatActivity implements BaseView,NetworkStateView.OnRefreshListener {
     public Context context;
-    private ProgressDialog dialog;
+    private ProgressDialogUtils progressDialog;
     public Toast toast;
     protected P presenter;
     private NetworkStateView networkStateView;
     private Unbinder unbinder;
-    private static final int CODE_REQUEST_PERMISSION = 1;
+    private NetworkReceiver networkReceiver;
+
+
+
+
+
     protected abstract P createPresenter();
 
     protected abstract int getLayoutId();
+
+    /**
+     * 初始化数据
+     */
+    protected abstract void initData();
+    /**
+     * 初始化视图界面
+     */
+    protected abstract void initView();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +66,14 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         ActivityUtils.addActivity(this);
         setContentView(getLayoutId());
         presenter = createPresenter();
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(new NetworkReceiver(this), filter);
+        networkReceiver = new NetworkReceiver(this);
+
         initDialog();
         initView();
         initData();
@@ -81,14 +105,6 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         View childView = LayoutInflater.from(this).inflate(layoutResId, null);
         container.addView(childView, 0);
     }
-    /**
-     * 初始化数据
-     */
-    protected abstract void initData();
-    /**
-     * 初始化视图界面
-     */
-    protected abstract void initView();
 
     @Override
     protected void onDestroy() {
@@ -111,7 +127,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
                 // 这里的requestCode就是申请时设置的requestCode。
                 // 和onActivityResult()的requestCode一样，用来区分多个不同的请求。
                 if(requestCode == code) {
-                    return;
+                    //TODO
                 }
             }
             @Override
@@ -119,7 +135,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
                 // 权限申请失败回调。
                 Log.e("调试", "申请权限失败 " +requestCode);
                 if(requestCode == code) {
-                    finish();
+                    return;
                 }
             }
          };
@@ -136,7 +152,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     /**
      * @param s
      */
-    public void showtoast(String s) {
+    public void showToast(String s) {
 
         if (toast == null) {
             toast = Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG);
@@ -144,36 +160,9 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         toast.show();
     }
 
-    private void closeLoadingDialog() {
-        if (dialog != null && dialog.isShowing()) {
-            dialog.dismiss();
-        }
-    }
-
-    private void showLoadingDialog() {
-
-        if (dialog == null) {
-            dialog = new ProgressDialog(context);
-        }
-        dialog.setCancelable(false);
-        dialog.show();
-    }
-
-    @Override
-    public void showLoading() {
-        showLoadingDialog();
-    }
-
-
-    @Override
-    public void hideLoading() {
-        closeLoadingDialog();
-    }
-
-
     @Override
     public void showError(String msg) {
-        showtoast(msg);
+        showToast(msg);
     }
 
     @Override
@@ -241,12 +230,14 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     @Override
     public void onRefresh() {
         onNetworkViewRefresh();
+
     }
 
     /**
      * 重新请求网络
      */
     public void onNetworkViewRefresh() {
+        Log.e("调试", "onNetworkViewRefresh: 正在重新请求网络" );
     }
 
     /**

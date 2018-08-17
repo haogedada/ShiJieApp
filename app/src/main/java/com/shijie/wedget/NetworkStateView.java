@@ -259,7 +259,6 @@ public class NetworkStateView extends LinearLayout {
             view.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextSize);
         }
     }
-
     public void setOnRefreshListener(OnRefreshListener listener) {
         mRefreshListener = listener;
     }
