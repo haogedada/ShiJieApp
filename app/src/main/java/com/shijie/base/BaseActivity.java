@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -30,9 +31,10 @@ import butterknife.Unbinder;
 /**
  * 基类
  * 公共Activity所有activity都继承于此BaseActivity，不继承原生
+ *
  * @param <P>
  */
-public abstract class BaseActivity<P extends BasePresenter> extends AppCompatActivity implements BaseView,NetworkStateView.OnRefreshListener {
+public abstract class BaseActivity<P extends BasePresenter> extends AppCompatActivity implements BaseView, NetworkStateView.OnRefreshListener {
     public Context context;
     private ProgressDialogUtils progressDialog;
     public Toast toast;
@@ -40,9 +42,6 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     private NetworkStateView networkStateView;
     private Unbinder unbinder;
     private NetworkReceiver networkReceiver;
-
-
-
 
 
     protected abstract P createPresenter();
@@ -53,6 +52,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
      * 初始化数据
      */
     protected abstract void initData();
+
     /**
      * 初始化视图界面
      */
@@ -72,14 +72,22 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         initData();
     }
 
-
     @SuppressLint("InflateParams")
     @Override
     public void setContentView(@LayoutRes int layoutResID) {
         View view = getLayoutInflater().inflate(R.layout.activity_base, null);
         //设置填充activity_base布局
         super.setContentView(view);
-
+        //去除标题栏
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+        // 沉浸效果
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) { // 透明状态栏
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            // 透明导航栏
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        }
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
             view.setFitsSystemWindows(true);
         }
@@ -90,6 +98,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
 
     /**
      * 初始化默认布局的View
+     *
      * @param layoutResId 子View的布局id
      */
     private void initDefaultView(int layoutResId) {
@@ -112,26 +121,27 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     /**
      * 简单权限申请处理复杂的使用Permission对象
      */
-    public void permissionCheck(int code,String permission){
-         PermissionListener listener = new PermissionListener() {
-             @Override
+    public void permissionCheck(int code, String permission) {
+        PermissionListener listener = new PermissionListener() {
+            @Override
             public void onSucceed(int requestCode, List<String> grantedPermissions) {
                 // 权限申请成功回调。
                 // 这里的requestCode就是申请时设置的requestCode。
                 // 和onActivityResult()的requestCode一样，用来区分多个不同的请求。
-                if(requestCode == code) {
+                if (requestCode == code) {
                     //TODO
                 }
             }
+
             @Override
             public void onFailed(int requestCode, List<String> deniedPermissions) {
                 // 权限申请失败回调。
-                Log.e("调试", "申请权限失败 " +requestCode);
-                if(requestCode == code) {
+                Log.e("调试", "申请权限失败 " + requestCode);
+                if (requestCode == code) {
                     return;
                 }
             }
-         };
+        };
         AndPermission.with(this)
                 .requestCode(code)
                 .permission(permission)
@@ -183,18 +193,18 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
      * 初始化dialog
      */
     private void initDialog() {
-    progressDialog = new ProgressDialogUtils(this, R.style.dialog_transparent_style);
-}
+        progressDialog = new ProgressDialogUtils(this, R.style.dialog_transparent_style);
+    }
 
     /**
      * 初始化广播
      */
-    private void initReceiver(){
+    private void initReceiver() {
         networkReceiver = new NetworkReceiver(this) {
             @Override
             public void noNetworkConnected() {
                 //网络未连接
-                progressDialog.showTipsDialog("tiaos","11",new String[]{"1","2"});
+                progressDialog.showTipsDialog("tiaos", "11", new String[]{"1", "2"});
             }
 
             @Override
@@ -257,7 +267,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
      * 重新请求网络
      */
     public void onNetworkViewRefresh() {
-        Log.e("调试", "onNetworkViewRefresh: 正在重新请求网络" );
+        Log.e("调试", "onNetworkViewRefresh: 正在重新请求网络");
     }
 
     /**
@@ -295,7 +305,6 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
      * ProgressDialog默认消失时间为1秒(1000毫秒)
      *
      * @param message 加载成功需要显示的文字
-     *
      */
     public void showProgressSuccess(String message) {
         progressDialog.showProgressSuccess(message);
@@ -316,7 +325,6 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
      * ProgressDialog默认消失时间为1秒(1000毫秒)
      *
      * @param message 加载成功需要显示的文字
-     *
      */
     public void showProgressFail(String message) {
         progressDialog.showProgressFail(message);

@@ -4,7 +4,9 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.mylhyl.circledialog.CircleDialog;
 import com.shijie.base.BaseActivity;
 import com.shijie.mvp.presenter.LoginPresenter;
 import com.shijie.mvp.view.LoginView;
@@ -55,7 +57,16 @@ public class MainActivity extends BaseActivity<LoginPresenter> implements LoginV
                // showContentView();
                 break;
             case R.id.bt_error:
-                showEmptyView();
+                new CircleDialog.Builder()
+                        .setTitle("标题")
+                        .setText("提示框")
+                        .setPositive("确定", null)
+                        .setOnShowListener(dialog ->
+                                Toast.makeText(MainActivity.this, "显示了！", Toast.LENGTH_SHORT).show())
+                        .setOnCancelListener(dialog ->
+                                Toast.makeText(MainActivity.this, "取消了！", Toast.LENGTH_SHORT).show())
+                        .show(getSupportFragmentManager());
+
                 break;
         }
 
