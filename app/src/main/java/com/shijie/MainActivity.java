@@ -12,7 +12,7 @@ import com.shijie.mvp.view.LoginView;
 public class MainActivity extends BaseActivity<LoginPresenter> implements LoginView,View.OnClickListener {
     private EditText et_name;
     private EditText et_password;
-    private Button btn_logon;
+    private Button btn_logon,bt_error;
     @Override
     protected LoginPresenter createPresenter() {
         return new LoginPresenter(this);
@@ -23,6 +23,10 @@ public class MainActivity extends BaseActivity<LoginPresenter> implements LoginV
         return R.layout.activity_main;
     }
 
+    @Override
+    protected void initData() {
+    }
+
     /**
      * 初始化界面
      */
@@ -30,7 +34,9 @@ public class MainActivity extends BaseActivity<LoginPresenter> implements LoginV
         et_name = (EditText) findViewById(R.id.et_name);
         et_password = (EditText) findViewById(R.id.et_password);
         btn_logon = (Button) findViewById(R.id.btn_login);
+         bt_error = (Button) findViewById(R.id.bt_error);
         btn_logon.setOnClickListener(this);
+        bt_error.setOnClickListener(this);
     }
     /**
      * 登录按钮的监听方法
@@ -38,11 +44,19 @@ public class MainActivity extends BaseActivity<LoginPresenter> implements LoginV
      */
     @Override
     public void onClick(View v) {
-       String name= et_name.getText().toString();
-       String password=et_password.getText().toString();
-        if (!TextUtils.isEmpty(name)&&!TextUtils.isEmpty(password))
-        {
-            presenter.login(name,password);
+        switch (v.getId()) {
+            case R.id.btn_login:
+                String name = et_name.getText().toString();
+                String password = et_password.getText().toString();
+                if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(password)) {
+                    presenter.login(name, password);
+                }
+                break;
+            case R.id.bt_error:
+
+
+                break;
+
         }
 
     }
@@ -65,6 +79,11 @@ public class MainActivity extends BaseActivity<LoginPresenter> implements LoginV
 
     @Override
     public void fristLogin() {
+
+    }
+
+    @Override
+    public void onRefresh() {
 
     }
 }

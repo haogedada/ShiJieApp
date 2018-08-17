@@ -34,9 +34,6 @@ public class NetworkStateView extends LinearLayout {
     private static final int STATE_NO_NETWORK = 3;
     private static final int STATE_EMPTY = 4;
 
-    //布局添加位置
-    private static final int VIEW_POSITION = 0;
-
     private int mLoadingViewId;
 
     private int mErrorViewId;
@@ -126,7 +123,7 @@ public class NetworkStateView extends LinearLayout {
         mCurrentState = STATE_LOADING;
         if (null == mLoadingView) {
             mLoadingView = mInflater.inflate(mLoadingViewId, null);
-            addView(mLoadingView, VIEW_POSITION, params);
+            addView(mLoadingView, 0, params);
         }
         showViewByState(mCurrentState);
     }
@@ -158,7 +155,7 @@ public class NetworkStateView extends LinearLayout {
                     }
                 });
             }
-            addView(mErrorView, VIEW_POSITION, params);
+            addView(mErrorView, 0, params);
         }
         showViewByState(mCurrentState);
     }
@@ -190,7 +187,7 @@ public class NetworkStateView extends LinearLayout {
                     }
                 });
             }
-            addView(mNoNetworkView, VIEW_POSITION, params);
+            addView(mNoNetworkView, 0, params);
         }
         showViewByState(mCurrentState);
     }
@@ -222,7 +219,7 @@ public class NetworkStateView extends LinearLayout {
                     }
                 });
             }
-            addView(mEmptyView, VIEW_POSITION, params);
+            addView(mEmptyView, 0, params);
         }
         showViewByState(mCurrentState);
     }
@@ -262,6 +259,7 @@ public class NetworkStateView extends LinearLayout {
             view.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextSize);
         }
     }
+
     public void setOnRefreshListener(OnRefreshListener listener) {
         mRefreshListener = listener;
     }
