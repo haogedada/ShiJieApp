@@ -1,6 +1,7 @@
 package com.shijie.utils;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.text.TextUtils;
@@ -27,9 +28,10 @@ public class ProgressDialogUtils {
     private TextView tv_loadText;
     private ImageView iv_loadImage;
     private ProgressBar pb_loadProgress;
-
+    private Activity activityContent;
     public ProgressDialogUtils(Context context) {
         this(context, 0);
+        activityContent= (Activity) context;
     }
 
     @SuppressLint("InflateParams")
@@ -77,6 +79,18 @@ public class ProgressDialogUtils {
                 tv_loadText.setVisibility(View.VISIBLE);
                 mDialog.show();
             }
+        }
+    }
+
+    /**
+     * 显示提示框
+     * @param title 提示框标题
+     * @param content 提示框内容
+     * @param btnText 提示框按钮名字可以是多个按钮
+     */
+    public void showTipsDialog(String title,String content,String [] btnText){
+        if(!TextUtils.isEmpty(title)&&!TextUtils.isEmpty(content)&&btnText.length>0){
+
         }
     }
 

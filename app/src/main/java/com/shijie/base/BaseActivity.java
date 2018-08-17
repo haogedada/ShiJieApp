@@ -66,15 +66,8 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         ActivityUtils.addActivity(this);
         setContentView(getLayoutId());
         presenter = createPresenter();
-
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
-        filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(new NetworkReceiver(this), filter);
-        networkReceiver = new NetworkReceiver(this);
-
         initDialog();
+        initReceiver();
         initView();
         initData();
     }
@@ -185,9 +178,37 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
 //            dialog.setProgress((int) (downSize * 100 / totalSize));
 //        }
 //    }
+
+    /**
+     * 初始化dialog
+     */
     private void initDialog() {
     progressDialog = new ProgressDialogUtils(this, R.style.dialog_transparent_style);
 }
+
+    /**
+     * 初始化广播
+     */
+    private void initReceiver(){
+        networkReceiver = new NetworkReceiver(this) {
+            @Override
+            public void noNetworkConnected() {
+                //网络未连接
+                progressDialog.showTipsDialog("tiaos","11",new String[]{"1","2"});
+            }
+
+            @Override
+            public void NetwordTips() {
+
+            }
+
+        };
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(networkReceiver, filter);
+    }
 
     /**
      * 显示加载中的布局
@@ -230,7 +251,6 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     @Override
     public void onRefresh() {
         onNetworkViewRefresh();
-
     }
 
     /**
@@ -255,6 +275,10 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     public void showProgressDialogWithText(String text) {
         progressDialog.showProgressDialogWithText(text);
     }
+    /**
+     *
+     */
+
 
     /**
      * 显示加载成功的ProgressDialog，文字显示在ProgressDialog的下面
