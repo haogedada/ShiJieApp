@@ -38,7 +38,7 @@ public abstract class NetworkReceiver extends BroadcastReceiver {
         }
         if (!NetworkUtil.isNetworkConnected(context)){
             noNetworkConnected();
-           Toast.makeText(ActivityContext,"网络未连接",Toast.LENGTH_LONG).show();
+           //Toast.makeText(ActivityContext,"网络未连接",Toast.LENGTH_LONG).show();
         }
         // 监听网络连接，包括wifi和移动数据的打开和关闭,以及连接上可用的连接都会接到监听
         if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
@@ -52,8 +52,8 @@ public abstract class NetworkReceiver extends BroadcastReceiver {
                             || info.getType() == ConnectivityManager.TYPE_MOBILE) {
                         NetworkCode=NetworkUtil.getNetworkType(context);
                         if (NetworkCode==1){
-                            Toast.makeText(ActivityContext,"现在网络为wifi" ,Toast.LENGTH_LONG).show();
-                            Log.e(TAG, "连上wifi");
+                           // Toast.makeText(ActivityContext,"现在网络为wifi" ,Toast.LENGTH_LONG).show();
+                            //Log.e(TAG, "连上wifi");
                         }else if(NetworkCode==2){
                             Toast.makeText(ActivityContext,"现在网络为数据网络，请注意你的流量" ,Toast.LENGTH_LONG).show();
                             Log.e(TAG, "连上数据网络");

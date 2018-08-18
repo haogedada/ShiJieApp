@@ -44,6 +44,7 @@ dependencies {
     implementation 'com.yanzhenjie:permission:1.0.6' //权限第三方库
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'//retrofit2.0
     implementation 'com.mylhyl:circleDialog:2.6.6'//dialog三方库 Android-CircleDialog
+    implementation 'com.hjm:BottomTabBar:1.2.2' //TabBar依赖包
     //ConverterFactory的String依赖包
     implementation 'com.squareup.retrofit2:converter-scalars:2.3.0'
     //ConverterFactory的Gson依赖包
@@ -52,5 +53,8 @@ dependencies {
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
     //    butterknife注解
     implementation 'com.jakewharton:butterknife:8.1.0'
+    implementation 'com.airbnb.android:lottie:2.5.4'
     annotationProcessor 'com.jakewharton:butterknife:8.1.0'
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.41'
+    implementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
 }
