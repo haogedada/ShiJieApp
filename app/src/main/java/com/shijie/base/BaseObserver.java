@@ -13,6 +13,7 @@ import io.reactivex.observers.DisposableObserver;
 import retrofit2.HttpException;
 
 /**
+ *
  * Created by haoge on 2018/8/16.
  */
 
@@ -51,7 +52,7 @@ public abstract class BaseObserver<T> extends DisposableObserver<T> {
     public void onNext(T o) {
         try {
             BaseModel model = (BaseModel) o;
-            if (model.getCode() == 200) {
+            if (model.getCode() == 200||model.getCode() ==105) {
                 onSuccess(o);
             }else if(model.getCode() == 199){
                 FristLogin(o);

@@ -58,6 +58,7 @@ public class MainActivity extends BaseActivity<LoginPresenter> implements LoginV
                 String password = et_password.getText().toString();
                 if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(password)) {
                     presenter.login(name, password);
+
                 }
                // showContentView();
                 break;
@@ -97,8 +98,9 @@ public class MainActivity extends BaseActivity<LoginPresenter> implements LoginV
                 break;
         }
     }
+
     @Override
-    public void showNetworkError() {
+    public void showNetworkError(String msg) {
 
     }
 
@@ -118,10 +120,13 @@ public class MainActivity extends BaseActivity<LoginPresenter> implements LoginV
 
     }
 
+
     @Override
     public void onRefresh() {
 
     }
+
+
 
     @Override
     public void showLoading() {

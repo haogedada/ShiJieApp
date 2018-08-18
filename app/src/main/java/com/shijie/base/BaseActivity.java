@@ -8,6 +8,7 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +18,8 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.hjm.bottomtabbar.BottomTabBar;
+import com.mylhyl.circledialog.CircleDialog;
+import com.mylhyl.circledialog.params.ProgressParams;
 import com.shijie.R;
 import com.shijie.utils.ActivityUtils;
 import com.shijie.wedget.NetworkStateView;
@@ -29,8 +32,6 @@ import com.yanzhenjie.permission.PermissionListener;
 
 import java.util.List;
 
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * 基类
@@ -43,10 +44,9 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     public Toast toast;
     protected P presenter;
     private NetworkStateView networkStateView;
-    private Unbinder unbinder;
     private NetworkReceiver networkReceiver;
     private BottomTabBar mBottomBar;
-
+    private DialogFragment dialogFragment;
     protected abstract P createPresenter();
 
     protected abstract int getLayoutId();
@@ -65,7 +65,6 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this;
-        unbinder = ButterKnife.bind(this);
         ActivityUtils.addActivity(this);
         setContentView(getLayoutId());
         presenter = createPresenter();
@@ -170,7 +169,6 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         if (presenter != null) {
             presenter.detachView();
         }
-        unbinder.unbind();
         ActivityUtils.removeActivity(this);
     }
 
@@ -191,7 +189,6 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
             @Override
             public void onFailed(int requestCode, List<String> deniedPermissions) {
                 // 权限申请失败回调。
-                Log.e("调试", "申请权限失败 " + requestCode);
                 if (requestCode == code) {
                     return;
                 }
@@ -208,6 +205,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     }
 
     /**
+     * toast的简写
      * @param s
      */
     public void showToast(String s) {
@@ -225,6 +223,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
 
     @Override
     public void onErrorCode(BaseModel model) {
+       presenter.onErrorCode(model);
     }
 
     /**
@@ -257,7 +256,20 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     public void showLoadingView() {
         networkStateView.showLoading();
     }
+    public void showLoading(){
+        dialogFragment = new CircleDialog.Builder()
+                .setProgressText("加载中...")
+                .setProgressStyle(ProgressParams.STYLE_SPINNER)
+//                        .setProgressDrawable(R.drawable.bg_progress_s)
+                .show(getSupportFragmentManager());
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        dialogFragment.dismiss();
+//                    }
+//                }, 3000);
 
+    }
     /**
      * 显示加载完成后的布局(即子类Activity的布局)
      */

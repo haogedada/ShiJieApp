@@ -54,4 +54,15 @@ public class BasePresenter<V extends BaseView> {
             compositeDisposable.dispose();
         }
     }
+
+    /**
+     * 判断所有错误码，并返回结果
+     * @param model
+     */
+   public void onErrorCode(BaseModel model){
+        if (model.getCode()==401){
+            baseView.showError("您还没有登录呢！！");
+        }
+
+   }
 }

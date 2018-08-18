@@ -53,10 +53,11 @@ public class ApiRetrofit {
             Log.e(TAG, "|token:" + response.header("authorization"));
             Log.e(TAG, "| Response:" + content);
             Log.e(TAG, "----------Request End:" + duration + "毫秒----------");
-            if( token!=null&&!token.equals("")){
+            if( token!=null&&!token.equals(" ")){
                 //刷新token即保存token
                 Log.e(TAG, "intercept: "+token);
             }
+
             return response.newBuilder()
                     .body(ResponseBody.create(mediaType, content))
                     .build();
