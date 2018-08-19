@@ -7,12 +7,13 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.mylhyl.circledialog.CircleDialog;
 import com.shijie.R;
 import com.shijie.adapter.CheckedAdapter;
+import com.shijie.utils.SharedPreferencesHelper;
+import com.shijie.utils.StrJudgeUtil;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.util.Calendar;
@@ -23,7 +24,7 @@ import java.util.Date;
  * Created by haoge on 2018/8/19.
  */
 
-public abstract class FormWindow implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
+public abstract class FormWindow implements DatePickerDialog.OnDateSetListener {
 
     private Context context;
     private DialogFragment dialogFragment;
@@ -31,7 +32,6 @@ public abstract class FormWindow implements View.OnClickListener, DatePickerDial
     private DatePickerDialog dpd;
     private FragmentManager fragmentManager;
     private android.app.FragmentManager fragmentManagerOfApp;
-
     /**
      * FormWindow构造函数
      *
@@ -51,15 +51,16 @@ public abstract class FormWindow implements View.OnClickListener, DatePickerDial
                 now.get(Calendar.MONTH), // Initial month selection
                 now.get(Calendar.DAY_OF_MONTH) // Inital day selection
         );
-
     }
-
     /**
      * 一些修改用户信息的弹窗
      *
      * @param index
      */
-    public void modifyMsgForm(int index) {
+    public void modifyMsgForm(int index,String userName) {
+        if (!StrJudgeUtil.isCorrectStr(userName)){
+            return;
+        }
         String rightBtn = "下一步";
         String title="请完善个人资料";
         String subTitle = null;
@@ -72,15 +73,6 @@ public abstract class FormWindow implements View.OnClickListener, DatePickerDial
                 inputHint = "请输入您的昵称";
                 key = "nikeName";
                 break;
-            case 1:
-                key = "sex";
-                break;
-            case 2:
-                key = "imgfile";
-                break;
-            case 3:
-                key = "birthday";
-                break;
             case 4:
                 subTitle = "设置个性签名";
                 inputHint = "请输入您的个性签名";
@@ -91,7 +83,6 @@ public abstract class FormWindow implements View.OnClickListener, DatePickerDial
                 break;
         }
         if (index == 2) {
-            key = "imgfile";
             dialogFragment.dismiss();
             final String[] items = {"拍照", "从相册选择", "小视频"};
             new CircleDialog.Builder()
@@ -114,7 +105,7 @@ public abstract class FormWindow implements View.OnClickListener, DatePickerDial
                                 //上传照片
                                 Toast.makeText(context, "点击了：" + items[position1]
                                         , Toast.LENGTH_SHORT).show();
-                              modifyMsgForm(index + 1);
+                              modifyMsgForm(index + 1,userName);
                             }
                     )
                     .setNegative("取消", v -> {
@@ -124,6 +115,7 @@ public abstract class FormWindow implements View.OnClickListener, DatePickerDial
 
         } else if (index == 3) {
             //时间插件设置
+            String finalKey="birthday";
             dpd.setAccentColor(Color.WHITE);
             dpd.setTitle("请选择您的出生日期");
             dpd.setOkColor(Color.GRAY);
@@ -134,9 +126,11 @@ public abstract class FormWindow implements View.OnClickListener, DatePickerDial
                 public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
                     //储存时间信息
                     Date birthday = new Date(year, monthOfYear, dayOfMonth);
-                    Log.e("调试", "选择时间1 " + birthday);
+                    new SharedPreferencesHelper(context,userName)
+                            .put(finalKey,birthday);
+                    Log.e("调试", "储存: "+finalKey+"|"+ birthday);
                     dpd.dismiss();
-                    modifyMsgForm(index + 1);
+                    modifyMsgForm(index + 1,userName);
                 }
             });
             dpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -148,6 +142,7 @@ public abstract class FormWindow implements View.OnClickListener, DatePickerDial
         } else if (index == 1) {
             final String[] objectsR = {"男", "女", "保密"};
             final CheckedAdapter checkedAdapterR = new CheckedAdapter(context, objectsR, true);
+            String finalKey1 = "sex";
             new CircleDialog.Builder()
                     .setCanceledOnTouchOutside(false)
                     .configDialog(params -> params.backgroundColorPress = Color.CYAN)
@@ -164,15 +159,19 @@ public abstract class FormWindow implements View.OnClickListener, DatePickerDial
                             fial();
                         }else {
                             //写入数据
+                            new SharedPreferencesHelper(context,userName)
+                                    .put(finalKey1,checkedAdapterR.getSaveChecked().toString());
+                            Log.e("调试", "储存: "+finalKey1+"|"+checkedAdapterR.getSaveChecked().toString() );
                             Toast.makeText(context
                                     , "选择了：" + checkedAdapterR.getSaveChecked().toString()
                                     , Toast.LENGTH_SHORT).show();
-                            modifyMsgForm(index + 1);
+                            modifyMsgForm(index + 1,userName);
                         }
                             }
                     )
                     .show(fragmentManager);
         } else {
+            String finalKey = key;
             dialogFragment = new CircleDialog.Builder()
                     .setCanceledOnTouchOutside(false)
                     .setCancelable(true)
@@ -192,15 +191,17 @@ public abstract class FormWindow implements View.OnClickListener, DatePickerDial
                         } else {
                             if (0 <= index && index <= 4) {
                                 //写入text数据
+                                new SharedPreferencesHelper(context,userName)
+                                        .put(finalKey,text);
+                                Log.e("调试", "储存: "+finalKey+"|"+text );
                                 if (index == 4) {
-                                    //调用回调方法
+                                    //成功回调方法
                                     success();
                                     dialogFragment.dismiss();
                                     //调用model操作
-
                                 } else {
                                     dialogFragment.dismiss();
-                                    modifyMsgForm(index + 1);
+                                    modifyMsgForm(index + 1,userName);
                                 }
                             }
                         }
@@ -210,15 +211,9 @@ public abstract class FormWindow implements View.OnClickListener, DatePickerDial
     }
 
     @Override
-    public void onClick(View v) {
-
-    }
-
-    @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
 
     }
-
     public abstract void success();
     public abstract void fial();
 }

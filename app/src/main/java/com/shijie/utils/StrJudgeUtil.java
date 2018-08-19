@@ -21,4 +21,5 @@ public class StrJudgeUtil {
         return email.matches("^\\w+@(\\w+\\.)+\\w+$");
     }
 
+
 }

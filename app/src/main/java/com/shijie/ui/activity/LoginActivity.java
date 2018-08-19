@@ -135,11 +135,10 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
      */
     @Override
     public void fristLogin() {
-
-
         new FormWindow(context, getSupportFragmentManager(), getFragmentManager()) {
             @Override
             public void success() {
+                presenter
                 loginSuccess();
             }
             @Override
@@ -166,9 +165,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
                         .configPositive(params -> params.backgroundColorPress = Color.GRAY)
                         .show(getSupportFragmentManager());
             }
-        }.modifyMsgForm(0);
-
-
+        }.modifyMsgForm(0,editName.getText().toString());
     }
 
     private void login() {
@@ -214,7 +211,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
                                 .configPositive(params -> params.backgroundColorPress = Color.GRAY)
                                 .show(getSupportFragmentManager());
                     }
-                }.modifyMsgForm(0);
+                }.modifyMsgForm(0,editName.getText().toString());
                 break;
         }
     }
