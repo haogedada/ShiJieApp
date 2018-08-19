@@ -1,5 +1,7 @@
 package com.shijie.base;
 
+import android.util.Log;
+
 import com.google.gson.JsonParseException;
 
 import org.json.JSONException;
@@ -52,6 +54,7 @@ public abstract class BaseObserver<T> extends DisposableObserver<T> {
     public void onNext(T o) {
         try {
             BaseModel model = (BaseModel) o;
+            Log.e("调试", "onNext: "+model.getCode() );
             if (model.getCode() == 200||model.getCode() ==105) {
                 onSuccess(o);
             }else if(model.getCode() == 199){
@@ -123,8 +126,6 @@ public abstract class BaseObserver<T> extends DisposableObserver<T> {
                 break;
         }
     }
-
-
     @Override
     public void onComplete() {
         if (view != null) {
