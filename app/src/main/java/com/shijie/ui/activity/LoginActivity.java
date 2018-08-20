@@ -1,9 +1,15 @@
 package com.shijie.ui.activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,6 +21,9 @@ import com.shijie.R;
 import com.shijie.base.BaseActivity;
 import com.shijie.mvp.presenter.LoginPresenter;
 import com.shijie.mvp.view.LoginView;
+import com.shijie.utils.Permission;
+import com.shijie.utils.SharedPreferencesHelper;
+import com.shijie.utils.StrJudgeUtil;
 import com.shijie.wedget.FormWindow;
 
 
@@ -27,6 +36,9 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     private Button btnLogin,btnRegdit;
     private EditText editName,editPassword;
     private DialogFragment dialogFragment;
+    private String name,password;
+    private final int IMAGE_REQUEST_CODE=100;
+    private String imgPath;
     /**
      * 显示登录等待框
      */
@@ -135,42 +147,22 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
      */
     @Override
     public void fristLogin() {
-        new FormWindow(context, getSupportFragmentManager(), getFragmentManager()) {
+        new FormWindow(name,this,context, getSupportFragmentManager(), getFragmentManager()) {
             @Override
             public void success() {
-                presenter
-                loginSuccess();
+                presenter.modifyUserMsg(name);
+              //  loginSuccess();
             }
             @Override
             public void fial() {
-                //弹窗
-                new CircleDialog.Builder()
-                        .setCanceledOnTouchOutside(false)
-                        .setCancelable(false)
-                        .configDialog(params -> {
-                            params.backgroundColor = Color.WHITE;
-                            params.backgroundColorPress = Color.GRAY;
-                        })
-                        .setTitle("完善个人资料失败")
-                        .setTitleColor(Color.RED)
-                        .setText("如不完成个人资料每次登陆都会有完善资料提示！\n您确定不完善个人资料？")
-                        .configText(params -> {
-                            params.padding = new int[]{100, 0, 100, 50};
-                        })
-                        .setNegative("取消", null)
-                        .setPositive("确定", v ->{
-                                    loginSuccess();
-                                }
-                        )
-                        .configPositive(params -> params.backgroundColorPress = Color.GRAY)
-                        .show(getSupportFragmentManager());
+                showModifyMsgFail();
             }
-        }.modifyMsgForm(0,editName.getText().toString());
+        }.modifyMsgForm(0);
     }
 
     private void login() {
-        String name = editName.getText().toString();
-        String password = editPassword.getText().toString();
+         name = editName.getText().toString();
+         password = editPassword.getText().toString();
         if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(password)) {
             presenter.login(name, password);
         }
@@ -183,37 +175,91 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
                 login();
                 break;
             case R.id.btn_regdit:
-                new FormWindow(context, getSupportFragmentManager(), getFragmentManager()) {
+                name = editName.getText().toString();
+                new Permission(this) {
                     @Override
                     public void success() {
-                        loginSuccess();
+                        presenter.modifyUserMsg(name);
                     }
+
                     @Override
-                    public void fial() {
-                        new CircleDialog.Builder()
-                                .setCanceledOnTouchOutside(false)
-                                .setCancelable(false)
-                                .configDialog(params -> {
-                                    params.backgroundColor = Color.WHITE;
-                                    params.backgroundColorPress = Color.GRAY;
-                                })
-                                .setTitle("完善个人资料失败")
-                                .setTitleColor(Color.RED)
-                                .setText("如不完成个人资料每次登陆都会有完善资料提示！\n您确定不完善个人资料？")
-                                .configText(params -> {
-                                    params.padding = new int[]{100, 0, 100, 50};
-                                })
-                                .setNegative("取消", null)
-                                .setPositive("确定", v ->{
-                                            loginSuccess();
-                                        }
-                                       )
-                                .configPositive(params -> params.backgroundColorPress = Color.GRAY)
-                                .show(getSupportFragmentManager());
+                    public void fail() {
+
                     }
-                }.modifyMsgForm(0,editName.getText().toString());
+                }.permissionCheck(100, new String[]{
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                },new String[]{
+                        "权限提示","需要读取文件权限","取消","确定"
+                });
+                break;
+        }
+    }
+    /**
+     * 选择完照片的回调时间
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //在相册里面选择好相片之后调回到现在的这个activity中
+        switch (requestCode) {
+            case IMAGE_REQUEST_CODE://这里的requestCode是我自己设置的，就是确定返回到那个Activity的标志
+                if (resultCode == RESULT_OK) {//resultcode是setResult里面设置的code值
+                    try {
+                        Uri selectedImage = data.getData(); //获取系统返回的照片的Uri
+                        String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                        Cursor cursor = getContentResolver().query(selectedImage,
+                                filePathColumn, null, null, null);//从系统表中查询指定Uri对应的照片
+                        cursor.moveToFirst();
+                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                        imgPath = cursor.getString(columnIndex);  //获取照片路径
+                        cursor.close();
+                        String finalKey="imgpath";
+                        if (StrJudgeUtil.isCorrectStr(name)){
+                            new SharedPreferencesHelper(context,"user_msg_"+name)
+                                    .put(finalKey,imgPath);
+                            Log.e("调试", "储存: "+finalKey+"|"+ imgPath);
+                        }
+                    } catch (Exception e) {
+                        // TODO Auto-generatedcatch block
+                        showModifyMsgFail();
+                        e.printStackTrace();
+                    }
+                }else {
+                    showModifyMsgFail();
+                }
+                break;
+            default:
                 break;
         }
     }
 
+    /**
+     * 显示修改信息失败弹窗
+     */
+    private void showModifyMsgFail(){
+        new CircleDialog.Builder()
+                .setCanceledOnTouchOutside(false)
+                .setCancelable(false)
+                .configDialog(params -> {
+                    params.backgroundColor = Color.WHITE;
+                    params.backgroundColorPress = Color.GRAY;
+                })
+                .setTitle("完善个人资料失败")
+                .setTitleColor(Color.RED)
+                .setText("如不完成个人资料每次登陆都会有完善资料提示！\n您确定不完善个人资料？")
+                .configText(params -> {
+                    params.padding = new int[]{100, 0, 100, 50};
+                })
+                .setNegative("取消", null)
+                .setPositive("确定", v ->{
+                            loginSuccess();
+                        }
+                )
+                .configPositive(params -> params.backgroundColorPress = Color.GRAY)
+                .show(getSupportFragmentManager());
+    }
 }

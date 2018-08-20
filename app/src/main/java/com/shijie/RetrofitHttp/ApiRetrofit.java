@@ -2,7 +2,9 @@ package com.shijie.RetrofitHttp;
 
 import android.util.Log;
 
+import com.shijie.App;
 import com.shijie.constant.Constants;
+import com.shijie.utils.SharedPreferencesHelper;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -25,7 +27,6 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class ApiRetrofit {
     public final String ROOTURL = Constants.requestRootURL.RootURL.getName();
-
     private static ApiRetrofit apiRetrofit;
     private Retrofit retrofit;
     private OkHttpClient client;
@@ -40,9 +41,19 @@ public class ApiRetrofit {
     private Interceptor interceptor = new Interceptor() {
         @Override
         public Response intercept(Chain chain) throws IOException {
-            Request request = chain.request();
+            Request originalRequest = chain.request();
+            Request.Builder builder = originalRequest.newBuilder();
+            String authorization= (String) new SharedPreferencesHelper(App.getApplication(),"user_token")
+                    .getSharedPreference("token",null);
+            //是否有报存token
+            if (authorization!=null&&!authorization.equals(" ")){
+                //请求头添加token
+                builder.addHeader("Authorization", authorization);
+            }
+           Request.Builder requestBuilder = builder.method(originalRequest.method(), originalRequest.body());
+            Request request = requestBuilder.build();
             long startTime = System.currentTimeMillis();
-            Response response = chain.proceed(chain.request());
+            Response response = chain.proceed(request);
             long endTime = System.currentTimeMillis();
             long duration = endTime - startTime;
             MediaType mediaType = response.body().contentType();
@@ -50,14 +61,15 @@ public class ApiRetrofit {
             String token=response.header("authorization");
             Log.e(TAG, "----------Request Start----------------");
             Log.e(TAG, "| " + request.toString() +"|"+ request.headers().toString());
-            Log.e(TAG, "|token:" + response.header("authorization"));
+            Log.e(TAG, "|获取失效token:" + response.header("authorization"));
             Log.e(TAG, "| Response:" + content);
             Log.e(TAG, "----------Request End:" + duration + "毫秒----------");
             if( token!=null&&!token.equals(" ")){
-                //刷新token即保存token
+                //token失效 刷新token即保存token
+                new SharedPreferencesHelper(App.getApplication(),"user_token")
+                        .put("token",token);
                 Log.e(TAG, "intercept: "+token);
             }
-
             return response.newBuilder()
                     .body(ResponseBody.create(mediaType, content))
                     .build();
@@ -82,7 +94,6 @@ public class ApiRetrofit {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(client)
                 .build();
-
         apiServer = retrofit.create(ApiServer.class);
     }
 

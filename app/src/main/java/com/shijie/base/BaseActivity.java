@@ -173,9 +173,10 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     }
 
     /**
-     * 全局简单处理权限申请,复杂的使用 Permission对象
+     * 全局处理权限申请,使用默认弹窗，子类还需要重写两个方法
+     * permissionSuccess()，permissionFail()
      */
-    public void permissionCheck(int code, String permission) {
+    public void permissionApplication(int code, String [] permissions) {
         PermissionListener listener = new PermissionListener() {
             @Override
             public void onSucceed(int requestCode, List<String> grantedPermissions) {
@@ -183,20 +184,20 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
                 // 这里的requestCode就是申请时设置的requestCode。
                 // 和onActivityResult()的requestCode一样，用来区分多个不同的请求。
                 if (requestCode == code) {
-                    //TODO
+                    permissionSuccess();
                 }
             }
             @Override
             public void onFailed(int requestCode, List<String> deniedPermissions) {
                 // 权限申请失败回调。
                 if (requestCode == code) {
-                    return;
+                    permissionFail();
                 }
             }
         };
         AndPermission.with(this)
                 .requestCode(code)
-                .permission(permission)
+                .permission(permissions)
                 .rationale((requestCode, rationale) ->
                         AndPermission.rationaleDialog(getApplicationContext(), rationale).show()
                 )
@@ -204,6 +205,18 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
                 .start();
     }
 
+    /**
+     * 权限申请成功
+     */
+    public void permissionSuccess(){
+
+    }
+    /**
+     * 权限申请失败
+     */
+    public void permissionFail(){
+
+    }
     /**
      * toast的简写
      * @param s
@@ -223,7 +236,10 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
 
     @Override
     public void onErrorCode(BaseModel model) {
-       presenter.onErrorCode(model);
+        //用户未登录或者token失效
+        if (model.getCode()==401){
+
+        }
     }
 
     /**
@@ -235,12 +251,11 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
             public void noNetworkConnected() {
                 //网络未连接
                 showNoNetworkView();
-               // progressDialog.showTipsDialog("tiaos", "11", new String[]{"1", "2"});
             }
 
             @Override
             public void NetwordTips() {
-
+                //TODO 网络提示
             }
         };
         IntentFilter filter = new IntentFilter();
@@ -260,15 +275,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         dialogFragment = new CircleDialog.Builder()
                 .setProgressText("加载中...")
                 .setProgressStyle(ProgressParams.STYLE_SPINNER)
-//                        .setProgressDrawable(R.drawable.bg_progress_s)
                 .show(getSupportFragmentManager());
-//                new Handler().postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        dialogFragment.dismiss();
-//                    }
-//                }, 3000);
-
     }
     /**
      * 显示加载完成后的布局(即子类Activity的布局)

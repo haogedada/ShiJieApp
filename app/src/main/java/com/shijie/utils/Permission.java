@@ -28,12 +28,11 @@ public abstract class Permission {
      * @param code 权限请求码，区分权限请求
      * @param permission 权限名
      * @param setText 设置用户拒绝权限再次请求提示弹窗，该数组四个值依次为
-     * 弹窗标题，弹窗信息，弹窗按钮名字，弹窗按钮名字，
+     * 弹窗标题，弹窗详细信息，左弹窗按钮名字，有弹窗按钮名字，
      */
-    public void permissionCheck(int code, String permission,String [] setText){
+    public void permissionCheck(int code, String permission[],String [] setText){
         RationaleListener rationaleListener=null;
-        if (!StrJudgeUtil.isCorrectInt(code)||
-                !StrJudgeUtil.isCorrectStr(permission)){
+        if (!StrJudgeUtil.isCorrectInt(code)){
             Toast.makeText(context,"permissionCheck出错",Toast.LENGTH_LONG).show();
         }
         if(setText.length!=4&&setText!=null){

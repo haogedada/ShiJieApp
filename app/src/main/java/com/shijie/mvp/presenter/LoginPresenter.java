@@ -2,11 +2,21 @@ package com.shijie.mvp.presenter;
 
 import android.util.Log;
 
+import com.shijie.App;
 import com.shijie.base.BaseModel;
 import com.shijie.base.BaseObserver;
 import com.shijie.base.BasePresenter;
 import com.shijie.mvp.view.LoginView;
+import com.shijie.utils.SharedPreferencesHelper;
 import com.shijie.utils.StrJudgeUtil;
+import com.shijie.utils.UpLoadFormUtil;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import okhttp3.MultipartBody;
 
 /**
  * 登录业务逻辑
@@ -20,7 +30,6 @@ public class LoginPresenter extends BasePresenter<LoginView> {
     public LoginPresenter(LoginView loginView) {
         super(loginView);
     }
-
     /**
      * 登录业务
      */
@@ -32,32 +41,80 @@ public class LoginPresenter extends BasePresenter<LoginView> {
                 baseView.showError("用户名不能为空");
             }
         }
+        //调用登陆接口，发起请求
             addDisposable(apiServer.LoginByRx(name, pwd), new BaseObserver(baseView) {
                 @Override
                 public void onSuccess(Object o) {
                     BaseModel model = (BaseModel) o;
-                    Log.e("调试", "数据:" + model.getData());
-                    //保存token,写入文件
                     if (model.getCode()==200) {
+                        //保存token,写入文件
+                        String token= (String) model.getData();
+                        new SharedPreferencesHelper(App.getApplication(),"user_token")
+                                .put("token",token);
                         baseView.loginSuccess();
                         baseView.hideLoading();
                     }else if (model.getCode()==105){
                         baseView.showVerifyFailed();
                         baseView.hideLoading();
+                    }else if(model.getCode()==199){
+                        String token= (String) model.getData();
+                        new SharedPreferencesHelper(App.getApplication(),"user_token")
+                                .put("token",token);
+                        baseView.fristLogin();
+                    }else if (model.getCode()==401){
+                        new SharedPreferencesHelper(App.getApplication(),"user_token")
+                                .remove("token");
+                          login(name,pwd);
                     }
-
                 }
+
+                @Override
+                public void onNetworkError(String msg) {
+                    baseView.showNetworkError(msg);
+                }
+
                 @Override
                 public void onError(String msg) {
-                    baseView.showNetworkError(msg);
-                    Log.e("调试", "网络连接失败:"+msg );
-                }
 
-                @Override
-                public void FristLogin(Object o) {
-                    baseView.fristLogin();
                 }
             });
         }
+    /**
+     * 发送修改用户信息请求
+     * @param userName
+     */
+    public void modifyUserMsg(String userName){
+        if(!StrJudgeUtil.isCorrectStr(userName)){
+            return;
+        }
+        Map<String, ?> userMsg =  new SharedPreferencesHelper(App.getApplication(), "user_msg_" + userName).getAll();
+        String imgpath= (String) userMsg.get("imgpath");
+        File imgfile=new File(imgpath);
+        if (!imgfile.exists()){
+            //照片文件不存在
+            Log.e("调试", "文件不存在" );
+            return;
+        }
+        userMsg.remove("imgpath");
+        Log.e("调试", "储存的信息"+userMsg);
+        List imgfiles=new ArrayList();
+        imgfiles.add(imgfile);
+        MultipartBody multipartBody = UpLoadFormUtil.formToMultipartBody(userMsg,imgfiles);
+            addDisposable(apiServer.modifyUser(multipartBody), new BaseObserver(baseView) {
+            @Override
+            public void onSuccess(Object o) {
+                Log.e("调试", "终于成功了 " );
+            }
 
+            @Override
+            public void onNetworkError(String msg) {
+
+            }
+
+            @Override
+            public void onError(String msg) {
+
+            }
+        });
+    }
 }

@@ -31,14 +31,16 @@ public abstract class NetworkReceiver extends BroadcastReceiver {
             Log.e(TAG,"wifiState = "+ wifiState);
             switch (wifiState){
                 case WifiManager.WIFI_STATE_DISABLED:
+                    //todo 根据wifi状态做相应操作
                     break;
                 case WifiManager.WIFI_STATE_DISABLING:
+                    //todo 根据wifi状态做相应操作
                     break;
             }
         }
         if (!NetworkUtil.isNetworkConnected(context)){
+            //网络未连接
             noNetworkConnected();
-           //Toast.makeText(ActivityContext,"网络未连接",Toast.LENGTH_LONG).show();
         }
         // 监听网络连接，包括wifi和移动数据的打开和关闭,以及连接上可用的连接都会接到监听
         if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
@@ -52,14 +54,15 @@ public abstract class NetworkReceiver extends BroadcastReceiver {
                             || info.getType() == ConnectivityManager.TYPE_MOBILE) {
                         NetworkCode=NetworkUtil.getNetworkType(context);
                         if (NetworkCode==1){
-                           // Toast.makeText(ActivityContext,"现在网络为wifi" ,Toast.LENGTH_LONG).show();
-                            //Log.e(TAG, "连上wifi");
+                            //TODO 连上wifi
                         }else if(NetworkCode==2){
+                            //TODO 连上数据待优化
                             Toast.makeText(ActivityContext,"现在网络为数据网络，请注意你的流量" ,Toast.LENGTH_LONG).show();
                             Log.e(TAG, "连上数据网络");
                         }
                     }
                 } else {
+                    // TODO 网络断开连接，这里可以判断什么网络断开
                    // NetworkCode=NetworkUtil.getNetworkType(context);
                   //  Toast.makeText(ActivityContext,"断开"+getNetworkStr(NetworkCode),Toast.LENGTH_LONG).show();
                     Log.e(TAG, "断开"+getNetworkStr(NetworkCode));
@@ -67,6 +70,12 @@ public abstract class NetworkReceiver extends BroadcastReceiver {
             }
         }
     }
+
+    /**
+     * 根据返回值得到网络类型
+     * @param i
+     * @return
+     */
     private String getNetworkStr(int i){
         String type=null;
         if(i==1){
@@ -79,6 +88,14 @@ public abstract class NetworkReceiver extends BroadcastReceiver {
         }
         return type;
     }
+
+    /**
+     * 网络未连接回调
+     */
     public abstract void noNetworkConnected();
+
+    /**
+     * 网络提示调
+     */
     public abstract void NetwordTips();
 }

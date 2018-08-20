@@ -1,7 +1,5 @@
 package com.shijie.base;
 
-import android.util.Log;
-
 import com.google.gson.JsonParseException;
 
 import org.json.JSONException;
@@ -54,12 +52,9 @@ public abstract class BaseObserver<T> extends DisposableObserver<T> {
     public void onNext(T o) {
         try {
             BaseModel model = (BaseModel) o;
-            Log.e("调试", "onNext: "+model.getCode() );
-            if (model.getCode() == 200||model.getCode() ==105) {
+            if (model.getCode() == 200||model.getCode() ==105||model.getCode()==199||model.getCode()==401) {
                 onSuccess(o);
-            }else if(model.getCode() == 199){
-                FristLogin(o);
-            } else {
+            }else {
                 if (view != null) {
                     view.onErrorCode(model);
                 }
@@ -68,7 +63,6 @@ public abstract class BaseObserver<T> extends DisposableObserver<T> {
             e.printStackTrace();
             onError(e.toString());
         }
-
 
     }
 
@@ -107,19 +101,19 @@ public abstract class BaseObserver<T> extends DisposableObserver<T> {
     private void onException(int unknownError) {
         switch (unknownError) {
             case CONNECT_ERROR:
-                onError("连接错误");
+                onNetworkError("连接错误");
                 break;
 
             case CONNECT_TIMEOUT:
-                onError("连接超时");
+                onNetworkError("连接超时");
                 break;
 
             case BAD_NETWORK:
-                onError("网络问题");
+                onNetworkError("网络问题");
                 break;
 
             case PARSE_ERROR:
-                onError("解析数据失败");
+                onNetworkError("解析数据失败");
                 break;
 
             default:
@@ -135,8 +129,8 @@ public abstract class BaseObserver<T> extends DisposableObserver<T> {
     }
     //成功事件
     public abstract void onSuccess(T o);
-    //失败事件
+    //失败事件(网络错误)
+    public abstract void onNetworkError(String msg);
     public abstract void onError(String msg);
-    //第一次登陆事件
-    public abstract void FristLogin(T o);
+
 }
