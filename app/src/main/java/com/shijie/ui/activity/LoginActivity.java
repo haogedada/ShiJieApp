@@ -63,6 +63,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
             dialogFragment.dismiss();
     }
 
+
     @Override
     protected LoginPresenter createPresenter() {
         return new LoginPresenter(this);

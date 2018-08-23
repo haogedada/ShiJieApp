@@ -11,8 +11,6 @@ import com.shijie.base.BaseView;
 
 public interface LoginView extends BaseView {
 
-    void showNetworkError(String msg);//显示网络异常
-
     void showVerifyFailed();//信息验证失败,账号或密码有误
 
     void loginSuccess();

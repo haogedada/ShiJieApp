@@ -30,5 +30,8 @@ public interface BaseView {
      */
     void onErrorCode(BaseModel model);
 
-
+    /**
+     * 网络错误
+     */
+    void showNetworkError(String errMsg);
 }
