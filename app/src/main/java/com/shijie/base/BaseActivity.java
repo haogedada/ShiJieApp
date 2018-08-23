@@ -2,6 +2,7 @@ package com.shijie.base;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
@@ -21,16 +22,15 @@ import com.hjm.bottomtabbar.BottomTabBar;
 import com.mylhyl.circledialog.CircleDialog;
 import com.mylhyl.circledialog.params.ProgressParams;
 import com.shijie.R;
+import com.shijie.ui.activity.IntroActivity;
+import com.shijie.ui.fragment.mainFragment.FourFragment;
+import com.shijie.ui.fragment.mainFragment.OneFragment;
+import com.shijie.ui.fragment.mainFragment.ThreeFragment;
+import com.shijie.ui.fragment.mainFragment.TwoFragment;
 import com.shijie.utils.ActivityUtils;
+import com.shijie.utils.PermissionHelper;
+import com.shijie.utils.SharedPreferencesHelper;
 import com.shijie.wedget.NetworkStateView;
-import com.shijie.wedget.fragment.FourFragment;
-import com.shijie.wedget.fragment.OneFragment;
-import com.shijie.wedget.fragment.ThreeFragment;
-import com.shijie.wedget.fragment.TwoFragment;
-import com.yanzhenjie.permission.AndPermission;
-import com.yanzhenjie.permission.PermissionListener;
-
-import java.util.List;
 
 
 /**
@@ -65,6 +65,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this;
+        fristStartUp();
         ActivityUtils.addActivity(this);
         setContentView(getLayoutId());
         presenter = createPresenter();
@@ -72,6 +73,19 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         initView();
         initData();
     }
+
+    /**
+     * 第一次启动
+     */
+    private void fristStartUp(){
+        boolean isFirst=(boolean)new SharedPreferencesHelper(this,"first_start_up").getSharedPreference("isFirst",true);
+        if (isFirst){
+            new SharedPreferencesHelper(this,"first_start_up").put("isFirst",false);
+            Intent intent=new Intent(context,IntroActivity.class);
+            startActivity(intent);
+        }
+    }
+
     @SuppressLint("InflateParams")
     @Override
     public void setContentView(@LayoutRes int layoutResID) {
@@ -176,33 +190,18 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
      * 全局处理权限申请,使用默认弹窗，子类还需要重写两个方法
      * permissionSuccess()，permissionFail()
      */
-    public void permissionApplication(int code, String [] permissions) {
-        PermissionListener listener = new PermissionListener() {
+    public void permissionApplication(String [] permissions) {
+        new PermissionHelper(this, getSupportFragmentManager()) {
             @Override
-            public void onSucceed(int requestCode, List<String> grantedPermissions) {
-                // 权限申请成功回调。
-                // 这里的requestCode就是申请时设置的requestCode。
-                // 和onActivityResult()的requestCode一样，用来区分多个不同的请求。
-                if (requestCode == code) {
-                    permissionSuccess();
-                }
+            public void success() {
+                permissionSuccess();
             }
+
             @Override
-            public void onFailed(int requestCode, List<String> deniedPermissions) {
-                // 权限申请失败回调。
-                if (requestCode == code) {
-                    permissionFail();
-                }
+            public void fail() {
+                permissionFail();
             }
-        };
-        AndPermission.with(this)
-                .requestCode(code)
-                .permission(permissions)
-                .rationale((requestCode, rationale) ->
-                        AndPermission.rationaleDialog(getApplicationContext(), rationale).show()
-                )
-                .callback(listener)
-                .start();
+        }.allUsePermission();
     }
 
     /**
@@ -264,13 +263,9 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(networkReceiver, filter);
     }
-
     /**
-     * 显示加载中的布局
+     * 显示加载中dialong
      */
-    public void showLoadingView() {
-        networkStateView.showLoading();
-    }
     public void showLoading(){
         dialogFragment = new CircleDialog.Builder()
                 .setProgressText("加载中...")
@@ -318,6 +313,5 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     public void onNetworkViewRefresh() {
         Log.e("调试", "onNetworkViewRefresh: 正在重新请求网络");
     }
-
 
 }

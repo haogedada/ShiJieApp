@@ -53,12 +53,10 @@ public class MainActivity extends BaseActivity<LoginPresenter> implements LoginV
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_login:
-                showLoadingView();
                 String name = et_name.getText().toString();
                 String password = et_password.getText().toString();
                 if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(password)) {
                     presenter.login(name, password);
-
                 }
                // showContentView();
                 break;

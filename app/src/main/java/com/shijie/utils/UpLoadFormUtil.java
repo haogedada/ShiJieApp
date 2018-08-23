@@ -1,5 +1,7 @@
 package com.shijie.utils;
 
+import android.util.Log;
+
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
@@ -22,15 +24,11 @@ public class UpLoadFormUtil {
         MultipartBody.Builder builder = new MultipartBody.Builder();
         builder.setType(MultipartBody.FORM);
         for (File file : files) {
-            if (!FileUtil.isImgFile(file.getName())||!FileUtil.isVedioFile(file.getName())){
-                try {
-                    throw new Exception("文件格式不合法");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            if (!FileUtil.isImgFile(file.getName())&&!FileUtil.isVedioFile(file.getName())){
+                Log.e("调试", "文件格式不合法" );
             }
             RequestBody requestBody = RequestBody.create(MediaType.parse("image/png"), file);
-            builder.addFormDataPart("file", file.getName(), requestBody);
+            builder.addFormDataPart("imgfile", file.getName(), requestBody);
         }
         Iterator it = map.entrySet().iterator();
         while (it.hasNext()) {

@@ -49,6 +49,8 @@ public class BasePresenter<V extends BaseView> {
                 .subscribeWith(observer));//传入观察者
     }
 
+
+
     public void removeDisposable() {
         if (compositeDisposable != null) {
             compositeDisposable.dispose();

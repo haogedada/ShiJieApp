@@ -2,13 +2,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.shijie.ui.fragment.mainFragment.ThreeFragment">
-
+    tools:context=".ui.activity.IntroActivity"
+    android:background="@drawable/ic_intro_3"
+    >
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="ThreeFragment"
-        android:textSize="50dp" />
+        android:paddingTop="150dp"
+        android:paddingLeft="30dp"
+        android:text="欢迎使用"
+        android:textSize="30dp" />
 
 </FrameLayout>

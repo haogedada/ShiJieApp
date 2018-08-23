@@ -37,15 +37,13 @@ public abstract class FormWindow extends Activity implements DatePickerDialog.On
     private android.app.FragmentManager fragmentManagerOfApp;
     private Activity activity;
     private final int IMAGE_REQUEST_CODE=100;
-    private String userName;
     /**
      *
      * @param context
      * @param fragmentManager
      * @param fragmentManagerOfApp
      */
-    public FormWindow(String userName,Activity activity,Context context, FragmentManager fragmentManager, android.app.FragmentManager fragmentManagerOfApp) {
-        this.userName=userName;
+    public FormWindow(Activity activity,Context context, FragmentManager fragmentManager, android.app.FragmentManager fragmentManagerOfApp) {
         this.context = context;
         this.activity=activity;
         this.fragmentManager = fragmentManager;
@@ -64,7 +62,7 @@ public abstract class FormWindow extends Activity implements DatePickerDialog.On
      *
      * @param index
      */
-    public void modifyMsgForm(int index) {
+    public void modifyMsgForm(String userName,int index) {
         if (!StrJudgeUtil.isCorrectStr(userName)){
             return;
         }
@@ -78,18 +76,17 @@ public abstract class FormWindow extends Activity implements DatePickerDialog.On
                 title = "检测到您是第一次登陆!";
                 subTitle = "请完善个人资料\n设置昵称";
                 inputHint = "请输入您的昵称";
-                key = "nikeName";
+                key = "nickname";
                 break;
-            case 4:
+            case 2:
                 subTitle = "设置个性签名";
                 inputHint = "请输入您的个性签名";
-                rightBtn = "完成";
                 key = "sign";
                 break;
             default:
                 break;
         }
-        if (index == 2) {
+        if (index == 4) {
             dialogFragment.dismiss();
             final String[] items = {"拍照", "从相册选择", "小视频"};
             new CircleDialog.Builder()
@@ -102,10 +99,10 @@ public abstract class FormWindow extends Activity implements DatePickerDialog.On
                     .configNegative(params -> {
                         params.backgroundColorPress = Color.GRAY;
                     })
-                    .setTitle("选择头像照片")
+                    .setTitle("最后一步选择头像照片")
                     .configTitle(params -> {
                     })
-                    .setSubTitle("请从以下中选择照片的方式进行提交")
+                    .setSubTitle("请从以下中选择照片的方式进行提交\n文件大小不能超过3Mb")
                     .configSubTitle(params -> {
                     })
                     .setItems(items, (parent, view1, position1, id) -> {
@@ -116,9 +113,10 @@ public abstract class FormWindow extends Activity implements DatePickerDialog.On
                                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                            activity.startActivityForResult(intent, IMAGE_REQUEST_CODE);
                         }
-                                Toast.makeText(context, "点击了：" + items[position1]
-                                        , Toast.LENGTH_SHORT).show();
-                              modifyMsgForm(index + 1);
+                            Toast.makeText(context, "点击了：" + items[position1]
+                                    , Toast.LENGTH_SHORT).show();
+                        dialogFragment.dismiss();
+                        finsh();
                             }
                     )
                     .setNegative("取消", v -> {
@@ -143,7 +141,7 @@ public abstract class FormWindow extends Activity implements DatePickerDialog.On
                             .put(finalKey,birthday);
                     Log.e("调试", "储存: "+finalKey+"|"+ birthday);
                     dpd.dismiss();
-                    modifyMsgForm(index + 1);
+                    modifyMsgForm(userName,index + 1);
                 }
             });
             dpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -182,7 +180,7 @@ public abstract class FormWindow extends Activity implements DatePickerDialog.On
                             new SharedPreferencesHelper(context,"user_msg_"+userName)
                                     .put(finalKey1,sex);
                             Log.e("调试", "储存: "+finalKey1+"|"+checkedAdapterR.getSaveChecked().toString() );
-                            modifyMsgForm(index + 1);
+                            modifyMsgForm(userName,index + 1);
                         }
                             }
                     )
@@ -211,15 +209,8 @@ public abstract class FormWindow extends Activity implements DatePickerDialog.On
                                 new SharedPreferencesHelper(context,"user_msg_"+userName)
                                         .put(finalKey,text);
                                 Log.e("调试", "储存: "+finalKey+"|"+text );
-                                if (index == 4) {
-                                    //成功回调方法
-                                    success();
                                     dialogFragment.dismiss();
-                                    //调用model操作
-                                } else {
-                                    dialogFragment.dismiss();
-                                    modifyMsgForm(index + 1);
-                                }
+                                    modifyMsgForm(userName,index + 1);
                             }
                         }
                     })
@@ -231,6 +222,6 @@ public abstract class FormWindow extends Activity implements DatePickerDialog.On
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
 
     }
-    public abstract void success();
+    public abstract void finsh();
     public abstract void fial();
 }

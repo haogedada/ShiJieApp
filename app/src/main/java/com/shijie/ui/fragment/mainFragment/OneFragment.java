@@ -1,4 +1,4 @@
-package com.shijie.wedget.fragment;
+package com.shijie.ui.fragment.mainFragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

@@ -131,6 +131,7 @@ public abstract class BaseObserver<T> extends DisposableObserver<T> {
     public abstract void onSuccess(T o);
     //失败事件(网络错误)
     public abstract void onNetworkError(String msg);
+    //失败事件
     public abstract void onError(String msg);
 
 }

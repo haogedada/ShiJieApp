@@ -24,6 +24,7 @@ import okhttp3.MultipartBody;
  */
 
 public class LoginPresenter extends BasePresenter<LoginView> {
+
     /**
      * 在构造方法中实例化View对象
      */
@@ -46,9 +47,9 @@ public class LoginPresenter extends BasePresenter<LoginView> {
                 @Override
                 public void onSuccess(Object o) {
                     BaseModel model = (BaseModel) o;
+                    String token= (String) model.getData();
                     if (model.getCode()==200) {
                         //保存token,写入文件
-                        String token= (String) model.getData();
                         new SharedPreferencesHelper(App.getApplication(),"user_token")
                                 .put("token",token);
                         baseView.loginSuccess();
@@ -57,7 +58,6 @@ public class LoginPresenter extends BasePresenter<LoginView> {
                         baseView.showVerifyFailed();
                         baseView.hideLoading();
                     }else if(model.getCode()==199){
-                        String token= (String) model.getData();
                         new SharedPreferencesHelper(App.getApplication(),"user_token")
                                 .put("token",token);
                         baseView.fristLogin();
@@ -88,24 +88,22 @@ public class LoginPresenter extends BasePresenter<LoginView> {
             return;
         }
         Map<String, ?> userMsg =  new SharedPreferencesHelper(App.getApplication(), "user_msg_" + userName).getAll();
-        String imgpath= (String) userMsg.get("imgpath");
+        String imgpath= (String) userMsg.get("imgfile");
+
         File imgfile=new File(imgpath);
         if (!imgfile.exists()){
             //照片文件不存在
-            Log.e("调试", "文件不存在" );
             return;
         }
-        userMsg.remove("imgpath");
-        Log.e("调试", "储存的信息"+userMsg);
         List imgfiles=new ArrayList();
         imgfiles.add(imgfile);
+        userMsg.remove("imgfile");
         MultipartBody multipartBody = UpLoadFormUtil.formToMultipartBody(userMsg,imgfiles);
             addDisposable(apiServer.modifyUser(multipartBody), new BaseObserver(baseView) {
             @Override
             public void onSuccess(Object o) {
-                Log.e("调试", "终于成功了 " );
+                Log.e("修改用户信息成功", "onSuccess: " );
             }
-
             @Override
             public void onNetworkError(String msg) {
 
@@ -117,4 +115,5 @@ public class LoginPresenter extends BasePresenter<LoginView> {
             }
         });
     }
+
 }

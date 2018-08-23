@@ -1,6 +1,5 @@
 package com.shijie.ui.activity;
 
-import android.Manifest;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -9,21 +8,19 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.mylhyl.circledialog.CircleDialog;
 import com.mylhyl.circledialog.params.ProgressParams;
+import com.mylhyl.circledialog.res.values.CircleDimen;
 import com.shijie.MainActivity;
 import com.shijie.R;
 import com.shijie.base.BaseActivity;
 import com.shijie.mvp.presenter.LoginPresenter;
 import com.shijie.mvp.view.LoginView;
-import com.shijie.utils.Permission;
 import com.shijie.utils.SharedPreferencesHelper;
-import com.shijie.utils.StrJudgeUtil;
 import com.shijie.wedget.FormWindow;
 
 
@@ -33,12 +30,18 @@ import com.shijie.wedget.FormWindow;
 
 public class LoginActivity extends BaseActivity<LoginPresenter> implements LoginView,View.OnClickListener{
 
+    //全局配置
+    static {
+        CircleDimen.DIALOG_RADIUS = 20;
+        //CircleColor.
+    }
     private Button btnLogin,btnRegdit;
     private EditText editName,editPassword;
     private DialogFragment dialogFragment;
     private String name,password;
     private final int IMAGE_REQUEST_CODE=100;
     private String imgPath;
+    private CircleDialog.Builder builder;
     /**
      * 显示登录等待框
      */
@@ -97,7 +100,6 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
         btnRegdit.setOnClickListener(this);
     }
 
-
     /**
      * 网络错误
      */
@@ -147,19 +149,21 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
      */
     @Override
     public void fristLogin() {
-        new FormWindow(name,this,context, getSupportFragmentManager(), getFragmentManager()) {
+        // 跳出弹窗,及用户完成或失败操作回调方法
+        new FormWindow(this,context, getSupportFragmentManager(), getFragmentManager()) {
             @Override
-            public void success() {
-                presenter.modifyUserMsg(name);
-              //  loginSuccess();
+            public void finsh() {
+                //todo 弹窗操作完成的回调方法
+
             }
+            //弹窗失败操作
             @Override
             public void fial() {
                 showModifyMsgFail();
             }
-        }.modifyMsgForm(0);
+        }.modifyMsgForm(name,0);
     }
-
+    //跳转到调用presentrs登陆
     private void login() {
          name = editName.getText().toString();
          password = editPassword.getText().toString();
@@ -175,35 +179,19 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
                 login();
                 break;
             case R.id.btn_regdit:
-                name = editName.getText().toString();
-                new Permission(this) {
-                    @Override
-                    public void success() {
-                        presenter.modifyUserMsg(name);
-                    }
-
-                    @Override
-                    public void fail() {
-
-                    }
-                }.permissionCheck(100, new String[]{
-                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
-                },new String[]{
-                        "权限提示","需要读取文件权限","取消","确定"
-                });
+              Intent intent=new Intent(LoginActivity.this,IntroActivity.class);
+              startActivity(intent);
                 break;
         }
     }
     /**
-     * 选择完照片的回调时间
+     * 选择完照片的回调方法，并调用presenter层
      * @param requestCode
      * @param resultCode
      * @param data
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         //在相册里面选择好相片之后调回到现在的这个activity中
         switch (requestCode) {
             case IMAGE_REQUEST_CODE://这里的requestCode是我自己设置的，就是确定返回到那个Activity的标志
@@ -217,18 +205,17 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
                         int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                         imgPath = cursor.getString(columnIndex);  //获取照片路径
                         cursor.close();
-                        String finalKey="imgpath";
-                        if (StrJudgeUtil.isCorrectStr(name)){
-                            new SharedPreferencesHelper(context,"user_msg_"+name)
-                                    .put(finalKey,imgPath);
-                            Log.e("调试", "储存: "+finalKey+"|"+ imgPath);
-                        }
+                        //储存文件
+                        new SharedPreferencesHelper(context,"user_msg_"+name)
+                                .put("imgfile",imgPath);
+                        presenter.modifyUserMsg(name);
                     } catch (Exception e) {
-                        // TODO Auto-generatedcatch block
+                        //显示出错弹窗
                         showModifyMsgFail();
                         e.printStackTrace();
                     }
                 }else {
+                //显示出错弹窗
                     showModifyMsgFail();
                 }
                 break;

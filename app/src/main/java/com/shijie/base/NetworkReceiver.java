@@ -28,7 +28,7 @@ public abstract class NetworkReceiver extends BroadcastReceiver {
         if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction())){
             //拿到wifi的状态值
             int wifiState = intent.getIntExtra(WifiManager.EXTRA_NEW_STATE,0);
-            Log.e(TAG,"wifiState = "+ wifiState);
+            Log.e(TAG,"wif状态 = "+ wifiState);
             switch (wifiState){
                 case WifiManager.WIFI_STATE_DISABLED:
                     //todo 根据wifi状态做相应操作

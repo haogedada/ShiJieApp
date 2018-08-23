@@ -45,7 +45,7 @@ public class ApiRetrofit {
             Request.Builder builder = originalRequest.newBuilder();
             String authorization= (String) new SharedPreferencesHelper(App.getApplication(),"user_token")
                     .getSharedPreference("token",null);
-            //是否有报存token
+            //是否有保存的token
             if (authorization!=null&&!authorization.equals(" ")){
                 //请求头添加token
                 builder.addHeader("Authorization", authorization);
@@ -108,7 +108,10 @@ public class ApiRetrofit {
         return apiRetrofit;
     }
 
+
     public ApiServer getApiService() {
         return apiServer;
     }
+
+
 }
