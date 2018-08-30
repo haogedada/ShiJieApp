@@ -67,5 +67,9 @@ dependencies {
     implementation 'com.github.apl-devs:appintro:v4.2.3'
     //图片加载glide依赖
     implementation 'com.github.bumptech.glide:glide:4.8.0'
-  //  annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
+    //  annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
+    //播放器依赖
+    implementation 'cn.jzvd:jiaozivideoplayer:6.2.12'
+    //视频详情依赖
+    implementation 'com.github.Yalantis:Context-Menu.Android:1.0.8'
 }

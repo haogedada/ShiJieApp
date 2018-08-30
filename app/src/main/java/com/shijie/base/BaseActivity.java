@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -47,6 +48,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     private NetworkReceiver networkReceiver;
     private BottomTabBar mBottomBar;
     private DialogFragment dialogFragment;
+
     protected abstract P createPresenter();
 
     protected abstract int getLayoutId();
@@ -70,18 +72,19 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         setContentView(getLayoutId());
         presenter = createPresenter();
         initReceiver();
-        initView();
         initData();
+        initView();
+
     }
 
     /**
      * 第一次启动
      */
-    private void fristStartUp(){
-        boolean isFirst=(boolean)new SharedPreferencesHelper(this,"first_start_up").getSharedPreference("isFirst",true);
-        if (isFirst){
-            new SharedPreferencesHelper(this,"first_start_up").put("isFirst",false);
-            Intent intent=new Intent(context,IntroActivity.class);
+    private void fristStartUp() {
+        boolean isFirst = (boolean) new SharedPreferencesHelper(this, "first_start_up").getSharedPreference("isFirst", true);
+        if (isFirst) {
+            new SharedPreferencesHelper(this, "first_start_up").put("isFirst", false);
+            Intent intent = new Intent(context, IntroActivity.class);
             startActivity(intent);
         }
     }
@@ -115,24 +118,28 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
 
     /**
      * Activity中设置是否加载BottomBar，要在初始化中设置
+     *
      * @param isShowTabBar
      */
-    public void setIsBottomTabBar(boolean isShowTabBar){
-        if(isShowTabBar){
+    public void setIsBottomTabBar(boolean isShowTabBar) {
+        if (isShowTabBar) {
             loadBottomBar();
         }
     }
+
     /**
      * Fragment中设置是否显示BottomBar，
+     *
      * @param isShow
      */
-    public void setShowTabBar(boolean isShow){
-        if (isShow){
+    public void setShowTabBar(boolean isShow) {
+        if (isShow) {
             mBottomBar.getTabBar().setVisibility(View.VISIBLE);
-        }else {
+        } else {
             mBottomBar.getTabBar().setVisibility(View.GONE);
         }
     }
+
     /**
      * 初始化默认布局的View
      *
@@ -148,12 +155,15 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     /**
      * 加载BottomBar
      */
-    private void loadBottomBar(){
+    private void loadBottomBar() {
         mBottomBar = findViewById(R.id.bottom_bar);
+        boolean index1= (boolean) new SharedPreferencesHelper(context,"spot_state").getSharedPreference("1",true);
+        boolean index2= (boolean) new SharedPreferencesHelper(context,"spot_state").getSharedPreference("2",true);
+        boolean index3= (boolean) new SharedPreferencesHelper(context,"spot_state").getSharedPreference("3",true);
         mBottomBar.init(getSupportFragmentManager(), 750.0, 1334.0)
 //                .setImgSize(50, 50)
 //                .setFontSize(28)
-                .setTabPadding(10, 6, 80)
+                .setTabPadding(10, 6, 10)
 //                .setChangeColor(Color.parseColor("#2784E7"),Color.parseColor("#282828"))
                 .addTabItem("首页", R.mipmap.ic_common_tab_index_select, R.mipmap.ic_common_tab_index_unselect, OneFragment.class)
                 .addTabItem("热门", R.mipmap.ic_common_tab_hot_select, R.mipmap.ic_common_tab_hot_unselect, TwoFragment.class)
@@ -165,18 +175,28 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
                 .setOnTabChangeListener(new BottomTabBar.OnTabChangeListener() {
                     @Override
                     public void onTabChange(int position, String name, View view) {
-                        if (position == 1)
+                        if (position == 1) {
+                          //TODO 跳转到activity
+                            new SharedPreferencesHelper(context,"spot_state").put("1",false);
                             mBottomBar.setSpot(1, false);
-                        if (position == 2)
+                        }
+                        if (position == 2) {
+                            //TODO 跳转到activity
+                            new SharedPreferencesHelper(context,"spot_state").put("2",false);
                             mBottomBar.setSpot(2, false);
-                        if (position == 3)
+                        }
+                        if (position == 3) {
+                            //TODO 跳转到activity
+                            new SharedPreferencesHelper(context,"spot_state").put("3",false);
                             mBottomBar.setSpot(3, false);
+                        }
                     }
                 })
-                .setSpot(1, true)
-                .setSpot(2, true)
-                .setSpot(3, true);
+                .setSpot(1, index1)
+                .setSpot(2, index2)
+                .setSpot(3, index3);
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -190,7 +210,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
      * 全局处理权限申请,使用默认弹窗，子类还需要重写两个方法
      * permissionSuccess()，permissionFail()
      */
-    public void permissionApplication(String [] permissions) {
+    public void permissionApplication(String[] permissions) {
         new PermissionHelper(this, getSupportFragmentManager()) {
             @Override
             public void success() {
@@ -207,17 +227,20 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     /**
      * 权限申请成功
      */
-    public void permissionSuccess(){
+    public void permissionSuccess() {
 
     }
+
     /**
      * 权限申请失败
      */
-    public void permissionFail(){
+    public void permissionFail() {
 
     }
+
     /**
      * toast的简写
+     *
      * @param s
      */
     public void showToast(String s) {
@@ -236,7 +259,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     @Override
     public void onErrorCode(BaseModel model) {
         //用户未登录或者token失效
-        if (model.getCode()==401){
+        if (model.getCode() == 401) {
 
         }
     }
@@ -263,20 +286,21 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(networkReceiver, filter);
     }
+
     /**
      * 显示加载中dialong
      */
-    public void showLoading(){
+    public void showLoading() {
         dialogFragment = new CircleDialog.Builder()
                 .setProgressText("加载中...")
                 .setProgressStyle(ProgressParams.STYLE_SPINNER)
                 .show(getSupportFragmentManager());
     }
-    /**
-     * 显示加载完成后的布局(即子类Activity的布局)
-     */
-    public void showContentView() {
-        networkStateView.showSuccess();
+
+    public void hideLoading() {
+        if (dialogFragment.isCancelable()) {
+            dialogFragment.dismiss();
+        }
     }
 
     /**
@@ -286,6 +310,30 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         networkStateView.showNoNetwork();
         networkStateView.setOnRefreshListener(this);
     }
+
+    @Override
+    public void showNetworkError(String errMsg) {
+        new CircleDialog.Builder()
+                .setCanceledOnTouchOutside(false)
+                .setCancelable(false)
+                .configDialog(params -> {
+                    params.backgroundColor = Color.WHITE;
+                    params.backgroundColorPress = Color.GRAY;
+                })
+                .setTitle("网络异常!!")
+                .setTitleColor(Color.RED)
+                .setText(errMsg + "!\n" + "您需要尝试重新连接吗？")
+                .configText(params -> {
+                    params.padding = new int[]{100, 0, 100, 50};
+                })
+                .setNegative("取消", null)
+                .setPositive("确定", v ->
+                        reconnectNetwork())
+                .configPositive(params -> params.backgroundColorPress = Color.GRAY)
+                .show(getSupportFragmentManager());
+
+    }
+
     /**
      * 显示没有数据的布局
      */
@@ -314,4 +362,5 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         Log.e("调试", "onNetworkViewRefresh: 正在重新请求网络");
     }
 
+    public abstract void reconnectNetwork();
 }

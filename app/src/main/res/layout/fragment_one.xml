@@ -3,14 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.shijie.ui.fragment.mainFragment.OneFragment">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="OneFragment"
-        android:textSize="50dp" />
-
     <TextView
         android:id="@+id/show"
         android:layout_width="match_parent"

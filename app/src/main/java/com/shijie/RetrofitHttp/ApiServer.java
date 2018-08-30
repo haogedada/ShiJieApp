@@ -43,5 +43,6 @@ public interface ApiServer {
     @POST("modifyUser")
     Observable<BaseModel> modifyUser(@Body MultipartBody multipartBody);
 
-
+    @GET(" app/homepage/{pagesize}")
+    Observable<BaseModel> getHomePage(@Path("pagesize")int pageSize);
 }

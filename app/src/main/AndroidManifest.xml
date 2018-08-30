@@ -27,12 +27,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
         <activity android:name=".ui.activity.LoginActivity" />
         <activity
             android:name=".ui.activity.IntroActivity"
             android:label="@string/app_intro" />
-        <activity android:name=".ui.activity.HomePageActivity"></activity>
+        <activity android:name=".ui.activity.HomePageActivity" />
     </application>
 
 </manifest>

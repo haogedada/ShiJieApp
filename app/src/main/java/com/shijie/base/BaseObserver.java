@@ -53,7 +53,7 @@ public abstract class BaseObserver<T> extends DisposableObserver<T> {
         try {
             BaseModel model = (BaseModel) o;
             if (model.getCode() == 200||model.getCode() ==105||model.getCode()==199||model.getCode()==401) {
-                onSuccess(o);
+                onSuccess(model);
             }else {
                 if (view != null) {
                     view.onErrorCode(model);
@@ -128,7 +128,7 @@ public abstract class BaseObserver<T> extends DisposableObserver<T> {
 
     }
     //成功事件
-    public abstract void onSuccess(T o);
+    public abstract void onSuccess(BaseModel o);
     //失败事件(网络错误)
     public abstract void onNetworkError(String msg);
     //失败事件

@@ -13,6 +13,12 @@ public class VideoBean {
 
     }
 
+    public VideoBean(String videoTitle, String videoContent, Integer playerCount) {
+        this.videoTitle = videoTitle;
+        this.videoContent = videoContent;
+        this.playerCount = playerCount;
+    }
+
     public VideoBean(String videoTitle, String videoContent, String videoUrl, String videoCoverUrl, String videoTime, String videoType, Integer videoId, Integer userId, Integer playerCount, Integer videoTipNum, Integer videoTrampleNum, Timestamp videoCreatTime, UserBean userBean) {
         this.videoTitle = videoTitle;
         this.videoContent = videoContent;

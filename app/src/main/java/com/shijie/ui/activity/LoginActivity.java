@@ -15,7 +15,6 @@ import android.widget.EditText;
 import com.mylhyl.circledialog.CircleDialog;
 import com.mylhyl.circledialog.params.ProgressParams;
 import com.mylhyl.circledialog.res.values.CircleDimen;
-import com.shijie.MainActivity;
 import com.shijie.R;
 import com.shijie.base.BaseActivity;
 import com.shijie.mvp.presenter.LoginPresenter;
@@ -59,8 +58,9 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
      */
     @Override
     public void hideLoading() {
-        if (dialogFragment.isCancelable())
-            dialogFragment.dismiss();
+      if (dialogFragment.isCancelable()){
+          dialogFragment.dismiss();
+      }
     }
 
 
@@ -106,24 +106,12 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
      */
     @Override
     public void showNetworkError(String msg) {
-        new CircleDialog.Builder()
-                .setCanceledOnTouchOutside(false)
-                .setCancelable(false)
-                .configDialog(params -> {
-                    params.backgroundColor = Color.WHITE;
-                    params.backgroundColorPress = Color.GRAY;
-                })
-                .setTitle("网络异常!!")
-                .setTitleColor(Color.RED)
-                .setText(msg+"!\n"+"您需要尝试重新连接吗？")
-                .configText(params -> {
-                    params.padding = new int[]{100, 0, 100, 50};
-                })
-                .setNegative("取消", null)
-                .setPositive("确定", v ->
-                       login())
-                .configPositive(params -> params.backgroundColorPress = Color.GRAY)
-                .show(getSupportFragmentManager());
+        super.showNetworkError(msg);
+    }
+
+    @Override
+    public void reconnectNetwork() {
+        login();
     }
 
     /**
@@ -140,7 +128,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
      */
     @Override
     public void loginSuccess() {
-        Intent intent=new Intent(LoginActivity.this, MainActivity.class);   //Intent intent=new Intent(MainActivity.this,JumpToActivity.class);
+        Intent intent=new Intent(LoginActivity.this, HomePageActivity.class);   //Intent intent=new Intent(MainActivity.this,JumpToActivity.class);
         startActivity(intent);
     }
 
@@ -180,7 +168,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
                 login();
                 break;
             case R.id.btn_regdit:
-              Intent intent=new Intent(LoginActivity.this,IntroActivity.class);
+              Intent intent=new Intent(LoginActivity.this,HomePageActivity.class);
               startActivity(intent);
                 break;
         }

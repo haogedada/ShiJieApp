@@ -45,8 +45,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
         //调用登陆接口，发起请求
             addDisposable(apiServer.LoginByRx(name, pwd), new BaseObserver(baseView) {
                 @Override
-                public void onSuccess(Object o) {
-                    BaseModel model = (BaseModel) o;
+                public void onSuccess(BaseModel model) {
                     String token= (String) model.getData();
                     if (model.getCode()==200) {
                         //保存token,写入文件
@@ -101,7 +100,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
         MultipartBody multipartBody = UpLoadFormUtil.formToMultipartBody(userMsg,imgfiles);
             addDisposable(apiServer.modifyUser(multipartBody), new BaseObserver(baseView) {
             @Override
-            public void onSuccess(Object o) {
+            public void onSuccess(BaseModel model) {
                 Log.e("修改用户信息成功", "onSuccess: " );
             }
             @Override
