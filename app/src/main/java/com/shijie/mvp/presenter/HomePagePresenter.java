@@ -23,11 +23,15 @@ public class HomePagePresenter extends BasePresenter<HomePageView> {
     public HomePagePresenter(HomePageView homePageView) {
         super(homePageView);
     }
+
+    /**
+     * 获取首页业务
+     * @param pageSize
+     */
     public void getHomePage(int pageSize){
         if (!StrJudgeUtil.isCorrectInt(pageSize)){
             baseView.showError("参数错误");
         }
-
         addDisposable(apiServer.getHomePage(pageSize), new BaseObserver(baseView) {
             @Override
             public void onSuccess(BaseModel model) {
@@ -46,12 +50,12 @@ public class HomePagePresenter extends BasePresenter<HomePageView> {
 
             @Override
             public void onNetworkError(String msg) {
-
+                baseView.showNetworkError(msg);
             }
 
             @Override
             public void onError(String msg) {
-
+                baseView.showError(msg);
             }
         });
     }

@@ -70,6 +70,8 @@ dependencies {
     //  annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
     //播放器依赖
     implementation 'cn.jzvd:jiaozivideoplayer:6.2.12'
+    implementation 'com.danikula:videocache:2.7.0'
+    implementation 'com.google.android.exoplayer:exoplayer:2.7.1'
     //视频详情依赖
     implementation 'com.github.Yalantis:Context-Menu.Android:1.0.8'
 }

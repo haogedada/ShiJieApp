@@ -74,7 +74,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
 
                 @Override
                 public void onError(String msg) {
-
+                    baseView.showError(msg);
                 }
             });
         }
@@ -105,12 +105,12 @@ public class LoginPresenter extends BasePresenter<LoginView> {
             }
             @Override
             public void onNetworkError(String msg) {
-
+                baseView.showNetworkError(msg);
             }
 
             @Override
             public void onError(String msg) {
-
+                baseView.showError(msg);
             }
         });
     }

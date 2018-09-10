@@ -19,12 +19,20 @@ import retrofit2.http.Query;
 public interface ApiServer {
 
     /**
-     * 根据视频id获取视频
+     * 根据视频id获取视频请求接口
      * @param videoId
      * @return
      */
     @GET("user/video/{videoId}")
     Observable<BaseModel> getVideoByVId(@Path("videoId") Integer videoId);
+
+    /**
+     * 根据视频id获取评论请求接口
+     * @param videoId
+     * @return
+     */
+    @GET("comments/{videoId}")
+    Observable<BaseModel> getCommentsByVId(@Path("videoId") Integer videoId);
 
     /**
      * 登录接口
@@ -36,13 +44,18 @@ public interface ApiServer {
     Observable<BaseModel> LoginByRx(@Query("username") String name, @Query("password") String pwd);
 
     /**
-     * 修改用户资料
+     * 修改用户资料请求接口
      * @param multipartBody
      * @return
      */
     @POST("modifyUser")
     Observable<BaseModel> modifyUser(@Body MultipartBody multipartBody);
 
+    /**
+     * 获取首页视频请求接口
+     * @param pageSize
+     * @return
+     */
     @GET(" app/homepage/{pagesize}")
     Observable<BaseModel> getHomePage(@Path("pagesize")int pageSize);
 }

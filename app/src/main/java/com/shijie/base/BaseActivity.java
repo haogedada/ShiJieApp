@@ -311,6 +311,10 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         networkStateView.setOnRefreshListener(this);
     }
 
+    /**
+     * 弹出是否重新发起请求
+     * @param errMsg
+     */
     @Override
     public void showNetworkError(String errMsg) {
         new CircleDialog.Builder()
@@ -328,6 +332,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
                 })
                 .setNegative("取消", null)
                 .setPositive("确定", v ->
+                      //重新发起请求方法
                         reconnectNetwork())
                 .configPositive(params -> params.backgroundColorPress = Color.GRAY)
                 .show(getSupportFragmentManager());
@@ -362,5 +367,8 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         Log.e("调试", "onNetworkViewRefresh: 正在重新请求网络");
     }
 
+    /**
+     * 重新发起请求接口
+     */
     public abstract void reconnectNetwork();
 }

@@ -1,5 +1,6 @@
 package com.shijie.ui.activity;
 
+import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -80,6 +81,9 @@ public class HomePageActivity extends BaseActivity<HomePagePresenter> implements
                     Toast.makeText(HomePageActivity.this, mySection.header, Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(HomePageActivity.this, mySection.t.getVideoTitle(), Toast.LENGTH_LONG).show();
+                    Intent intent=new Intent(HomePageActivity.this,PlayerVideoActivity.class);
+                    intent.putExtra("videoId",mySection.t.getVideoId());
+                    startActivity(intent);
                 }
             }
         });
