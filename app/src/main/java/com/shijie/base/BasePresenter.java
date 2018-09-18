@@ -16,13 +16,14 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 public class BasePresenter<V extends BaseView> {
-    private CompositeDisposable compositeDisposable;
     public V baseView;
     protected ApiServer apiServer = ApiRetrofit.getInstance().getApiService();
+    private CompositeDisposable compositeDisposable;
 
     public BasePresenter(V baseView) {
         this.baseView = baseView;
     }
+
     /**
      * 解除绑定
      */
@@ -39,6 +40,7 @@ public class BasePresenter<V extends BaseView> {
     public V getBaseView() {
         return baseView;
     }
+
     public void addDisposable(Observable<?> observable, BaseObserver observer) {
         if (compositeDisposable == null) {
             compositeDisposable = new CompositeDisposable();
@@ -48,7 +50,6 @@ public class BasePresenter<V extends BaseView> {
                 .observeOn(AndroidSchedulers.mainThread())// 指定 Subscriber 的回调发生在主线程
                 .subscribeWith(observer));//传入观察者
     }
-
 
 
     public void removeDisposable() {

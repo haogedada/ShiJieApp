@@ -8,6 +8,7 @@ import com.shijie.entity.tableBean.VideoBean;
  */
 public class MySection extends SectionEntity<VideoBean> {
     private boolean isMore;
+
     public MySection(boolean isHeader, String header, boolean isMroe) {
         super(isHeader, header);
         this.isMore = isMroe;

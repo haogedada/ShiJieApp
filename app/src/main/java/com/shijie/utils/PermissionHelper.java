@@ -25,11 +25,6 @@ import java.util.List;
 public abstract class PermissionHelper {
     private Activity context;
     private FragmentManager fragmentManager;
-    public PermissionHelper(Activity context,FragmentManager fragmentManager) {
-        this.context = context;
-        this.fragmentManager=fragmentManager;
-    }
-
     /**
      * 用户拒绝授权（也有可能系统阻止授权），再次询问用户是否授权，
      */
@@ -49,14 +44,14 @@ public abstract class PermissionHelper {
                         params.backgroundColorPress = Color.GRAY;
                     })
                     .setTitle("权限提示!")
-                    .setText("您拒绝了："+permissionText+"权限，将会影响您软件使用体验，您确定是否继续授权？")
+                    .setText("您拒绝了：" + permissionText + "权限，将会影响您软件使用体验，您确定是否继续授权？")
                     .configText(params -> {
                         params.padding = new int[]{100, 0, 100, 50};
                     })
-                    .setNeutral("取消",v -> {
+                    .setNeutral("取消", v -> {
                         executor.cancel();
                     })
-                    .setPositive("确定", v ->{
+                    .setPositive("确定", v -> {
                         // 如果用户继续：
                         executor.execute();
                     })
@@ -64,13 +59,18 @@ public abstract class PermissionHelper {
                     .show(fragmentManager);
         }
     };
+
+    public PermissionHelper(Activity context, FragmentManager fragmentManager) {
+        this.context = context;
+        this.fragmentManager = fragmentManager;
+    }
+
     /**
-     *
      * 自定义权限申请
      *
      * @param permissions 权限名
      */
-    public void permissionCheck(String [] permissions) {
+    public void permissionCheck(String[] permissions) {
         AndPermission.with(context)
                 .runtime()
                 .permission(permissions)
@@ -97,12 +97,12 @@ public abstract class PermissionHelper {
                                 params.backgroundColorPress = Color.GRAY;
                             })
                             .setTitle("权限提示")
-                            .setText("设置："+permissionText+"权限出问题了，您是否需要到权限设置里进行授权？")
+                            .setText("设置：" + permissionText + "权限出问题了，您是否需要到权限设置里进行授权？")
                             .configText(params -> {
                                 params.padding = new int[]{100, 0, 100, 50};
                             })
-                            .setNegative("取消",null)
-                            .setPositive("确定", v ->{
+                            .setNegative("取消", null)
+                            .setPositive("确定", v -> {
                                 // 如果用户继续：
                                 AndPermission.with(context)
                                         .runtime()
@@ -128,8 +128,8 @@ public abstract class PermissionHelper {
     /**
      * 所有权限申请
      */
-    public void allUsePermission(){
-        String [] permissions=new String[]{
+    public void allUsePermission() {
+        String[] permissions = new String[]{
                 Permission.READ_EXTERNAL_STORAGE,
                 Permission.WRITE_EXTERNAL_STORAGE,
                 Permission.CAMERA,
@@ -160,12 +160,12 @@ public abstract class PermissionHelper {
                                 params.backgroundColorPress = Color.GRAY;
                             })
                             .setTitle("权限提示")
-                            .setText("没有："+permissionText+"权限，您是否需要到权限设置里进行授权？")
+                            .setText("没有：" + permissionText + "权限，您是否需要到权限设置里进行授权？")
                             .configText(params -> {
                                 params.padding = new int[]{100, 0, 100, 50};
                             })
-                            .setNegative("取消",null)
-                            .setPositive("确定", v ->{
+                            .setNegative("取消", null)
+                            .setPositive("确定", v -> {
                                 // 如果用户继续：
                                 AndPermission.with(context)
                                         .runtime()
@@ -187,6 +187,8 @@ public abstract class PermissionHelper {
             }
         }).start();
     }
-       public abstract void success();
-       public abstract void fail();
+
+    public abstract void success();
+
+    public abstract void fail();
 }

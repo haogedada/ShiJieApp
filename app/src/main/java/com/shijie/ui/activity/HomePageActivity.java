@@ -17,7 +17,9 @@ import com.shijie.mvp.view.HomePageView;
 
 import java.util.List;
 
-public class HomePageActivity extends BaseActivity<HomePagePresenter> implements HomePageView{
+public class HomePageActivity extends BaseActivity<HomePagePresenter> implements HomePageView {
+    private final static String TAG="HomePageActivity";
+
     private RecyclerView mRecyclerView;
     //private List<MySection> mData;
 
@@ -33,14 +35,14 @@ public class HomePageActivity extends BaseActivity<HomePagePresenter> implements
 
     @Override
     protected void initData() {
-      presenter.getHomePage(4);
+        presenter.getHomePage(4);
     }
 
     @Override
     protected void initView() {
         setIsBottomTabBar(true);
         //setShowTabBar(true);
-        mRecyclerView =  findViewById(R.id.recycler_view);
+        mRecyclerView = findViewById(R.id.recycler_view);
         //对齐卡片布局
         //  mRecyclerView.setLayoutManager(new GridLayoutManager(this,2));
         //瀑布式卡片布局
@@ -64,10 +66,7 @@ public class HomePageActivity extends BaseActivity<HomePagePresenter> implements
         super.showNetworkError(errMsg);
     }
 
-    @Override
-    public void onNetworkViewRefresh() {
-        presenter.getHomePage(4);
-    }
+
 
     @Override
     public void reconnectNetwork() {
@@ -85,8 +84,8 @@ public class HomePageActivity extends BaseActivity<HomePagePresenter> implements
                     Toast.makeText(HomePageActivity.this, mySection.header, Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(HomePageActivity.this, mySection.t.getVideoTitle(), Toast.LENGTH_LONG).show();
-                    Intent intent=new Intent(HomePageActivity.this,PlayerVideoActivity.class);
-                    intent.putExtra("videoId",mySection.t.getVideoId());
+                    Intent intent = new Intent(HomePageActivity.this, PlayerVideoActivity.class);
+                    intent.putExtra("videoId", mySection.t.getVideoId());
                     startActivity(intent);
                 }
             }

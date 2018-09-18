@@ -39,7 +39,7 @@ import com.shijie.wedget.NetworkStateView;
  *
  * @param <P>
  */
-public abstract class BaseActivity<P extends BasePresenter> extends AppCompatActivity implements  NetworkStateView.OnRefreshListener,BaseView {
+public abstract class BaseActivity<P extends BasePresenter> extends AppCompatActivity implements BaseView {
     public Context context;
     public Toast toast;
     protected P presenter;
@@ -155,9 +155,9 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
      */
     private void loadBottomBar() {
         mBottomBar = findViewById(R.id.bottom_bar);
-        boolean index1= (boolean) new SharedPreferencesHelper(context,"spot_state").getSharedPreference("1",true);
-        boolean index2= (boolean) new SharedPreferencesHelper(context,"spot_state").getSharedPreference("2",true);
-        boolean index3= (boolean) new SharedPreferencesHelper(context,"spot_state").getSharedPreference("3",true);
+        boolean index1 = (boolean) new SharedPreferencesHelper(context, "spot_state").getSharedPreference("1", true);
+        boolean index2 = (boolean) new SharedPreferencesHelper(context, "spot_state").getSharedPreference("2", true);
+        boolean index3 = (boolean) new SharedPreferencesHelper(context, "spot_state").getSharedPreference("3", true);
         mBottomBar.init(getSupportFragmentManager(), 750.0, 1334.0)
 //                .setImgSize(50, 50)
 //                .setFontSize(28)
@@ -174,18 +174,18 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
                     @Override
                     public void onTabChange(int position, String name, View view) {
                         if (position == 1) {
-                          //TODO 跳转到activity
-                            new SharedPreferencesHelper(context,"spot_state").put("1",false);
+                            //TODO 跳转到activity
+                            new SharedPreferencesHelper(context, "spot_state").put("1", false);
                             mBottomBar.setSpot(1, false);
                         }
                         if (position == 2) {
                             //TODO 跳转到activity
-                            new SharedPreferencesHelper(context,"spot_state").put("2",false);
+                            new SharedPreferencesHelper(context, "spot_state").put("2", false);
                             mBottomBar.setSpot(2, false);
                         }
                         if (position == 3) {
                             //TODO 跳转到activity
-                            new SharedPreferencesHelper(context,"spot_state").put("3",false);
+                            new SharedPreferencesHelper(context, "spot_state").put("3", false);
                             mBottomBar.setSpot(3, false);
                         }
                     }
@@ -250,6 +250,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
 
     /**
      * 显示报错信息
+     *
      * @param msg
      */
     @Override
@@ -265,7 +266,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
             @Override
             public void noNetworkConnected() {
                 //网络未连接
-                showNoNetworkView();
+                showNetworkError("网络断开连接");
             }
 
             @Override
@@ -298,15 +299,8 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     }
 
     /**
-     * 显示没有网络的布局
-     */
-    public void showNoNetworkView() {
-        networkStateView.showNoNetwork();
-        networkStateView.setOnRefreshListener(this);
-    }
-
-    /**
      * 弹出是否重新发起请求
+     *
      * @param errMsg
      */
     @Override
@@ -326,7 +320,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
                 })
                 .setNegative("取消", null)
                 .setPositive("确定", v ->
-                      //重新发起请求方法
+                        //重新发起请求方法
                         reconnectNetwork())
                 .configPositive(params -> params.backgroundColorPress = Color.GRAY)
                 .show(getSupportFragmentManager());
@@ -334,32 +328,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     }
 
     /**
-     * 显示没有数据的布局
-     */
-    public void showEmptyView() {
-        networkStateView.showEmpty();
-        networkStateView.setOnRefreshListener(this);
-    }
-
-    /**
-     * 显示数据错误，网络错误等布局
-     */
-    public void showErrorView() {
-        networkStateView.showError();
-        networkStateView.setOnRefreshListener(this);
-    }
-
-    @Override
-    public void onRefresh() {
-        onNetworkViewRefresh();
-    }
-
-    /**
-     * 重新请求网络
-     */
-    public abstract void onNetworkViewRefresh();
-    /**
-     * 重新发起请求接口
+     * 弹窗重新发起请求接口
      */
     public abstract void reconnectNetwork();
 }

@@ -1,7 +1,5 @@
 package com.shijie.mvp.presenter;
 
-import android.util.Log;
-
 import com.shijie.base.BaseModel;
 import com.shijie.base.BaseObserver;
 import com.shijie.base.BasePresenter;
@@ -17,8 +15,8 @@ public class PlayerVideoPresenter extends BasePresenter<PlayerVideoView> {
         super(baseView);
     }
 
-    public void getVideoById(int videoId){
-        if (!StrJudgeUtil.isCorrectInt(videoId)){
+    public void getVideoById(int videoId) {
+        if (!StrJudgeUtil.isCorrectInt(videoId)) {
             baseView.showError("参数错误");
         }
         addDisposable(apiServer.getVideoByVId(videoId), new BaseObserver(baseView) {

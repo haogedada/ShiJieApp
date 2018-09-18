@@ -26,14 +26,13 @@ import com.shijie.utils.UIUtils;
 
 public class NetworkStateView extends LinearLayout {
 
-    //当前的加载状态
-    private int mCurrentState;
     private static final int STATE_SUCCESS = 0;
     private static final int STATE_LOADING = 1;
     private static final int STATE_NETWORK_ERROR = 2;
     private static final int STATE_NO_NETWORK = 3;
     private static final int STATE_EMPTY = 4;
-
+    //当前的加载状态
+    private int mCurrentState;
     private int mLoadingViewId;
 
     private int mErrorViewId;
@@ -259,6 +258,7 @@ public class NetworkStateView extends LinearLayout {
             view.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextSize);
         }
     }
+
     public void setOnRefreshListener(OnRefreshListener listener) {
         mRefreshListener = listener;
     }

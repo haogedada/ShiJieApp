@@ -8,7 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="styleNetworkStateView">@style/NetworkStateViewTheme</item>
     </style>
-   <!-- 标题栏样式 -->
+    <!-- 标题栏样式 -->
     <style name="Toolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="android:textColor">@android:color/white</item>
         <item name="android:windowNoTitle">true</item>
@@ -30,7 +30,7 @@
         <item name="nsvTextSize">16sp</item>
     </style>
 
-    <style name="dialogWindowAnim" parent="android:Animation" mce_bogus="1">
+    <style name="dialogWindowAnim" mce_bogus="1" parent="android:Animation">
         <item name="android:windowEnterAnimation">@anim/dialog_enter_anim</item>
         <item name="android:windowExitAnimation">@anim/dialog_exit_anim</item>
     </style>

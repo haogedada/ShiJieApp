@@ -42,7 +42,7 @@
         <attr name="nsvNoNetworkText" format="string" />
 
         <!-- 刷新的ImageView图片id -->
-        <attr name="nsvRefreshImage" format="reference"/>
+        <attr name="nsvRefreshImage" format="reference" />
 
         <!-- 文字大小 -->
         <attr name="nsvTextSize" format="dimension" />

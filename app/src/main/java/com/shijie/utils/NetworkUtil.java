@@ -7,7 +7,7 @@ import android.text.TextUtils;
 
 /**
  * 网络工具类
- *
+ * <p>
  * create by 邹峰立 on 2016/9/18
  */
 public class NetworkUtil {

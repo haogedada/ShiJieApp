@@ -20,19 +20,21 @@ public class TitleView extends RelativeLayout {
     public TitleView(Context context, AttributeSet attrs) {
         super(context, attrs);
         //加载布局
-        LayoutInflater.from(context).inflate(R.layout.title_bar,this);
+        LayoutInflater.from(context).inflate(R.layout.title_bar, this);
 
         //获取控件
-        mButton=findViewById(R.id.bt_title);
-        mTextView=findViewById(R.id.tv_title);
+        mButton = findViewById(R.id.bt_title);
+        mTextView = findViewById(R.id.tv_title);
     }
+
     // 为左侧返回按钮添加自定义点击事件
     public void setLeftButtonListener(OnClickListener listener) {
         mButton.setOnClickListener(listener);
     }
-     // 设置标题的方法
-      public void setTitleText(String title) {
-              mTextView.setText(title);
-          }
+
+    // 设置标题的方法
+    public void setTitleText(String title) {
+        mTextView.setText(title);
+    }
 
 }

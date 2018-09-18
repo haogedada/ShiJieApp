@@ -17,6 +17,7 @@ public class ActivityUtils {
 
     /**
      * 添加一个Activity到堆栈中
+     *
      * @param activity
      */
     public static void addActivity(Activity activity) {
@@ -28,6 +29,7 @@ public class ActivityUtils {
 
     /**
      * 从堆栈中移除指定的Activity
+     *
      * @param activity
      */
     public static void removeActivity(Activity activity) {
@@ -38,6 +40,7 @@ public class ActivityUtils {
 
     /**
      * 获取顶部的Activity
+     *
      * @return
      */
     public static Activity getTopActivity() {
@@ -61,9 +64,10 @@ public class ActivityUtils {
 
     /**
      * 将一个Fragment添加到Activity中
+     *
      * @param fragmentManager fragment管理器
-     * @param fragment  需要添加的fragment
-     * @param frameId  布局FrameLayout的Id
+     * @param fragment        需要添加的fragment
+     * @param frameId         布局FrameLayout的Id
      */
     public static void addFragmentToActivity(FragmentManager fragmentManager, Fragment fragment, int frameId) {
         if (null != fragmentManager && null != fragment) {
@@ -75,10 +79,11 @@ public class ActivityUtils {
 
     /**
      * 将一个Fragment添加到Activity中,并添加tag标识
-     * @param fragmentManager  fragment管理器
-     * @param fragment  需要添加的fragment
-     * @param frameId 布局FrameLayout的Id
-     * @param tag  fragment的唯一tag标识
+     *
+     * @param fragmentManager fragment管理器
+     * @param fragment        需要添加的fragment
+     * @param frameId         布局FrameLayout的Id
+     * @param tag             fragment的唯一tag标识
      * @param addToBackStack  是否添加到栈中，可通过返回键进行切换fragment
      */
     public static void addFragmentToActivity(FragmentManager fragmentManager, Fragment fragment, int frameId, String tag, boolean addToBackStack) {
@@ -94,11 +99,12 @@ public class ActivityUtils {
 
     /**
      * 对Fragment进行显示隐藏的切换，减少fragment的重复创建
+     *
      * @param fragmentManager fragment管理器
-     * @param hideFragment  需要隐藏的Fragment
-     * @param showFragment  需要显示的Fragment
-     * @param frameId   布局FrameLayout的Id
-     * @param tag  fragment的唯一tag标识
+     * @param hideFragment    需要隐藏的Fragment
+     * @param showFragment    需要显示的Fragment
+     * @param frameId         布局FrameLayout的Id
+     * @param tag             fragment的唯一tag标识
      */
     public static void switchFragment(FragmentManager fragmentManager, Fragment hideFragment, Fragment showFragment, int frameId, String tag) {
         if (fragmentManager != null) {
@@ -117,9 +123,10 @@ public class ActivityUtils {
 
     /**
      * 替换Activity中的Fragment
+     *
      * @param fragmentManager fragment管理器
-     * @param fragment  需要替换到Activity的Fragment
-     * @param frameId  布局FrameLayout的Id
+     * @param fragment        需要替换到Activity的Fragment
+     * @param frameId         布局FrameLayout的Id
      */
     public static void replaceFragmentFromActivity(FragmentManager fragmentManager, Fragment fragment, int frameId) {
         if (null != fragmentManager && null != fragment) {

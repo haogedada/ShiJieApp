@@ -20,6 +20,7 @@ public class HomePageAdapter extends BaseSectionQuickAdapter<MySection, BaseView
     public HomePageAdapter(int layoutResId, int sectionHeadResId, List data) {
         super(layoutResId, sectionHeadResId, data);
     }
+
     @Override
     protected void convertHead(BaseViewHolder helper, MySection item) {
         helper.setText(R.id.header, item.header);
@@ -29,11 +30,11 @@ public class HomePageAdapter extends BaseSectionQuickAdapter<MySection, BaseView
 
     @Override
     protected void convert(BaseViewHolder helper, MySection item) {
-        VideoBean video =  item.t;
+        VideoBean video = item.t;
         ImageView iv = helper.getView(R.id.img_video_cover);
         Glide.with(mContext).load(video.getVideoCoverUrl()).into(iv);
         helper.setText(R.id.tv_video_title, video.getVideoTitle());
-        helper.setText(R.id.tv_play_count,"播放量："+video.getPlayerCount());
-        helper.setText(R.id.tv_video_time,"时长："+video.getVideoTime());
+        helper.setText(R.id.tv_play_count, "播放量：" + video.getPlayerCount());
+        helper.setText(R.id.tv_video_time, "时长：" + video.getVideoTime());
     }
 }

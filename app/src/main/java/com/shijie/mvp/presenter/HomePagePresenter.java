@@ -26,23 +26,24 @@ public class HomePagePresenter extends BasePresenter<HomePageView> {
 
     /**
      * 获取首页业务
+     *
      * @param pageSize
      */
-    public void getHomePage(int pageSize){
-        if (!StrJudgeUtil.isCorrectInt(pageSize)){
+    public void getHomePage(int pageSize) {
+        if (!StrJudgeUtil.isCorrectInt(pageSize)) {
             baseView.showError("参数错误");
         }
         addDisposable(apiServer.getHomePage(pageSize), new BaseObserver(baseView) {
             @Override
             public void onSuccess(BaseModel model) {
-                String data=new Gson().toJson(model.getData());
-                HomePageBean homePageBean=new Gson().fromJson(data,HomePageBean.class);
+                String data = new Gson().toJson(model.getData());
+                HomePageBean homePageBean = new Gson().fromJson(data, HomePageBean.class);
                 List<MySection> list = new ArrayList<>();
-                for (TypeListBean t:homePageBean.getVideoTypeList()) {
-                    list.add(new MySection(true,t.getVideoType(),true));
-                  for (VideoBean videoBean:t.getVideos()){
-                      list.add(new MySection(videoBean));
-                  }
+                for (TypeListBean t : homePageBean.getVideoTypeList()) {
+                    list.add(new MySection(true, t.getVideoType(), true));
+                    for (VideoBean videoBean : t.getVideos()) {
+                        list.add(new MySection(videoBean));
+                    }
                 }
                 baseView.showView(list);
                 baseView.hideLoading();

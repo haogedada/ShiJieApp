@@ -16,12 +16,10 @@ import retrofit2.HttpException;
 
 
 /**
- *
  * Created by haoge on 2018/8/16.
  */
 
 public abstract class BaseObserver<T> extends DisposableObserver<T> {
-    protected BaseView view;
     /**
      * 解析数据失败
      */
@@ -38,11 +36,11 @@ public abstract class BaseObserver<T> extends DisposableObserver<T> {
      * 连接超时
      */
     public static final int CONNECT_TIMEOUT = 1004;
-
     /**
      * 密匙
      */
     private final static String key = "haogedad";
+    protected BaseView view;
 
 
     public BaseObserver(BaseView view) {
@@ -58,6 +56,7 @@ public abstract class BaseObserver<T> extends DisposableObserver<T> {
 
     /**
      * 网络请求结果对象
+     *
      * @param o
      */
     @Override
@@ -67,9 +66,9 @@ public abstract class BaseObserver<T> extends DisposableObserver<T> {
             if (model.getCode() == 200 || model.getCode() == 105 || model.getCode() == 199 || model.getCode() == 401) {
                 String s = model.getData().toString();
                 //获取到的数据进行解密
-                String data =  DesUtil.decrypt(s, key);
-                if (data!=null){
-                    Object obj=new Gson().fromJson(data,Object.class);
+                String data = DesUtil.decrypt(s, key);
+                if (data != null) {
+                    Object obj = new Gson().fromJson(data, Object.class);
                     model.setData(obj);
                 }
                 onSuccess(model);
@@ -84,7 +83,6 @@ public abstract class BaseObserver<T> extends DisposableObserver<T> {
         }
 
     }
-
 
 
     @Override
@@ -139,6 +137,7 @@ public abstract class BaseObserver<T> extends DisposableObserver<T> {
                 break;
         }
     }
+
     @Override
     public void onComplete() {
         if (view != null) {
@@ -146,10 +145,13 @@ public abstract class BaseObserver<T> extends DisposableObserver<T> {
         }
 
     }
+
     //成功事件
     public abstract void onSuccess(BaseModel o);
+
     //失败事件(网络错误)
     public abstract void onNetworkError(String msg);
+
     //失败事件
     public abstract void onError(String msg);
 

@@ -31,6 +31,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
     public LoginPresenter(LoginView loginView) {
         super(loginView);
     }
+
     /**
      * 登录业务
      */
@@ -43,66 +44,69 @@ public class LoginPresenter extends BasePresenter<LoginView> {
             }
         }
         //调用登陆接口，发起请求
-            addDisposable(apiServer.LoginByRx(name, pwd), new BaseObserver(baseView) {
-                @Override
-                public void onSuccess(BaseModel model) {
-                    String token= (String) model.getData();
-                    if (model.getCode()==200) {
-                        //保存token,写入文件
-                        new SharedPreferencesHelper(App.getApplication(),"user_token")
-                                .put("token",token);
-                        baseView.loginSuccess();
-                        baseView.hideLoading();
-                    }else if (model.getCode()==105){
-                        baseView.showVerifyFailed();
-                        baseView.hideLoading();
-                    }else if(model.getCode()==199){
-                        new SharedPreferencesHelper(App.getApplication(),"user_token")
-                                .put("token",token);
-                        baseView.fristLogin();
-                    }else if (model.getCode()==401){
-                        new SharedPreferencesHelper(App.getApplication(),"user_token")
-                                .remove("token");
-                          login(name,pwd);
-                    }
+        addDisposable(apiServer.LoginByRx(name, pwd), new BaseObserver(baseView) {
+            @Override
+            public void onSuccess(BaseModel model) {
+                String token = (String) model.getData();
+                if (model.getCode() == 200) {
+                    //保存token,写入文件
+                    new SharedPreferencesHelper(App.getApplication(), "user_token")
+                            .put("token", token);
+                    baseView.loginSuccess();
+                    baseView.hideLoading();
+                } else if (model.getCode() == 105) {
+                    baseView.showVerifyFailed();
+                    baseView.hideLoading();
+                } else if (model.getCode() == 199) {
+                    new SharedPreferencesHelper(App.getApplication(), "user_token")
+                            .put("token", token);
+                    baseView.fristLogin();
+                } else if (model.getCode() == 401) {
+                    new SharedPreferencesHelper(App.getApplication(), "user_token")
+                            .remove("token");
+                    login(name, pwd);
                 }
+            }
 
-                @Override
-                public void onNetworkError(String msg) {
-                    baseView.showNetworkError(msg);
-                }
+            @Override
+            public void onNetworkError(String msg) {
+                baseView.showNetworkError(msg);
+            }
 
-                @Override
-                public void onError(String msg) {
-                    baseView.showError(msg);
-                }
-            });
-        }
+            @Override
+            public void onError(String msg) {
+                baseView.showError(msg);
+            }
+        });
+    }
+
     /**
      * 发送修改用户信息请求
+     *
      * @param userName
      */
-    public void modifyUserMsg(String userName){
-        if(!StrJudgeUtil.isCorrectStr(userName)){
+    public void modifyUserMsg(String userName) {
+        if (!StrJudgeUtil.isCorrectStr(userName)) {
             return;
         }
-        Map<String, ?> userMsg =  new SharedPreferencesHelper(App.getApplication(), "user_msg_" + userName).getAll();
-        String imgpath= (String) userMsg.get("imgfile");
+        Map<String, ?> userMsg = new SharedPreferencesHelper(App.getApplication(), "user_msg_" + userName).getAll();
+        String imgpath = (String) userMsg.get("imgfile");
 
-        File imgfile=new File(imgpath);
-        if (!imgfile.exists()){
+        File imgfile = new File(imgpath);
+        if (!imgfile.exists()) {
             //照片文件不存在
             return;
         }
-        List imgfiles=new ArrayList();
+        List imgfiles = new ArrayList();
         imgfiles.add(imgfile);
         userMsg.remove("imgfile");
-        MultipartBody multipartBody = UpLoadFormUtil.formToMultipartBody(userMsg,imgfiles);
-            addDisposable(apiServer.modifyUser(multipartBody), new BaseObserver(baseView) {
+        MultipartBody multipartBody = UpLoadFormUtil.formToMultipartBody(userMsg, imgfiles);
+        addDisposable(apiServer.modifyUser(multipartBody), new BaseObserver(baseView) {
             @Override
             public void onSuccess(BaseModel model) {
-                Log.e("修改用户信息成功", "onSuccess: " );
+                Log.e("修改用户信息成功", "onSuccess: ");
             }
+
             @Override
             public void onNetworkError(String msg) {
                 baseView.showNetworkError(msg);

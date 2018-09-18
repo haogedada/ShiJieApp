@@ -1,6 +1,7 @@
 package com.shijie.base;
 
-/**基类
+/**
+ * 基类
  * 提取所有view共有的方法
  * 所有vidw都继承于BaseView
  * Created by haoge on 2018/8/15.

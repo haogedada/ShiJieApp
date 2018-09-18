@@ -10,6 +10,8 @@ import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 
 import com.mylhyl.circledialog.CircleDialog;
@@ -27,20 +29,24 @@ import com.shijie.wedget.FormWindow;
  * Created by haoge on 2018/8/18.
  */
 
-public class LoginActivity extends BaseActivity<LoginPresenter> implements LoginView,View.OnClickListener{
+public class LoginActivity extends BaseActivity<LoginPresenter> implements LoginView, View.OnClickListener {
+
+    private static final String TAG = "LoginActivity";
 
     //全局配置
     static {
         CircleDimen.DIALOG_RADIUS = 20;
-        //CircleColor.
     }
-    private Button btnLogin,btnRegdit;
-    private EditText editName,editPassword;
+
+    private final int IMAGE_REQUEST_CODE = 100;
+    private Button btnLogin, btnRegdit;
+    private EditText editName, editPassword;
     private DialogFragment dialogFragment;
-    private String name,password;
-    private final int IMAGE_REQUEST_CODE=100;
+    private String name, password;
     private String imgPath;
-    private CircleDialog.Builder builder;
+    private CheckBox rememberPassword;
+    private boolean isRememberPassword,isChecked1;
+
     /**
      * 显示登录等待框
      */
@@ -49,7 +55,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
         dialogFragment = new CircleDialog.Builder()
                 .setProgressText("登录中...")
                 .setProgressStyle(ProgressParams.STYLE_SPINNER)
-                        .setProgressDrawable(R.drawable.bg_progress_s)
+                .setProgressDrawable(R.drawable.bg_progress_s)
                 .show(getSupportFragmentManager());
     }
 
@@ -58,9 +64,9 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
      */
     @Override
     public void hideLoading() {
-      if (dialogFragment.isCancelable()){
-          dialogFragment.dismiss();
-      }
+        if (dialogFragment.isCancelable()) {
+            dialogFragment.dismiss();
+        }
     }
 
 
@@ -93,12 +99,28 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     @Override
     protected void initView() {
         setIsBottomTabBar(false);
-        btnLogin=findViewById(R.id.btn_login);
-        btnRegdit=findViewById(R.id.btn_regdit);
-        editName=findViewById(R.id.edit_name);
-        editPassword=findViewById(R.id.edid_password);
+        btnLogin = findViewById(R.id.btn_login);
+        btnRegdit = findViewById(R.id.btn_regdit);
+        editName = findViewById(R.id.edit_name);
+        editPassword = findViewById(R.id.edid_password);
+        rememberPassword = findViewById(R.id.remember_password);
+        isRememberPassword = (boolean) new SharedPreferencesHelper(LoginActivity.this, "remember_password").getSharedPreference("isChecked", false);
+        rememberPassword.setChecked(isRememberPassword);
+        if(isRememberPassword){
+          String name1 = (String) new SharedPreferencesHelper(LoginActivity.this, "remember_password").getSharedPreference("userName", null);
+          String passWord1 = (String) new SharedPreferencesHelper(LoginActivity.this, "remember_password").getSharedPreference("passWord", null);
+            editName.setText(name1);
+            editPassword.setText(passWord1);
+        }
         btnLogin.setOnClickListener(this);
         btnRegdit.setOnClickListener(this);
+        rememberPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                isChecked1 = isChecked;
+                new SharedPreferencesHelper(LoginActivity.this, "remember_password").put("isChecked", isChecked);
+            }
+        });
     }
 
     /**
@@ -109,12 +131,9 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
         super.showNetworkError(msg);
     }
 
-    //刷新网络
-    @Override
-    public void onNetworkViewRefresh() {
-
-    }
-
+    /**
+     * 弹窗重新发起请求
+     */
     @Override
     public void reconnectNetwork() {
         login();
@@ -134,7 +153,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
      */
     @Override
     public void loginSuccess() {
-        Intent intent=new Intent(LoginActivity.this, HomePageActivity.class);   //Intent intent=new Intent(MainActivity.this,JumpToActivity.class);
+        Intent intent = new Intent(LoginActivity.this, HomePageActivity.class);   //Intent intent=new Intent(MainActivity.this,JumpToActivity.class);
         startActivity(intent);
     }
 
@@ -145,42 +164,55 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     @Override
     public void fristLogin() {
         // 跳出弹窗,及用户完成或失败操作回调方法
-        new FormWindow(this,context, getSupportFragmentManager(), getFragmentManager()) {
+        new FormWindow(this, context, getSupportFragmentManager(), getFragmentManager()) {
             @Override
             public void finsh() {
                 //todo 弹窗操作完成的回调方法
 
             }
+
             //弹窗失败操作
             @Override
             public void fial() {
                 showModifyMsgFail();
             }
-        }.modifyMsgForm(name,0);
+        }.modifyMsgForm(name, 0);
     }
+
     //跳转到调用presentrs登陆
     private void login() {
-         name = editName.getText().toString();
-         password = editPassword.getText().toString();
-        if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(password)) {
+        name = editName.getText().toString();
+        password = editPassword.getText().toString();
+        if (isChecked1) {
+            if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(password)) {
+                new SharedPreferencesHelper(LoginActivity.this, "remember_password").put("userName", name);
+                new SharedPreferencesHelper(LoginActivity.this, "remember_password").put("passWord", password);
+                presenter.login(name, password);
+            }
+        } else {
             presenter.login(name, password);
         }
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_login:
                 login();
                 break;
             case R.id.btn_regdit:
-              Intent intent=new Intent(LoginActivity.this,HomePageActivity.class);
-              startActivity(intent);
+                Intent intent = new Intent(LoginActivity.this, HomePageActivity.class);
+                startActivity(intent);
+                break;
+            default:
                 break;
         }
     }
+
+
     /**
      * 选择完照片的回调方法，并调用presenter层
+     *
      * @param requestCode
      * @param resultCode
      * @param data
@@ -201,16 +233,16 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
                         imgPath = cursor.getString(columnIndex);  //获取照片路径
                         cursor.close();
                         //储存文件
-                        new SharedPreferencesHelper(context,"user_msg_"+name)
-                                .put("imgfile",imgPath);
+                        new SharedPreferencesHelper(context, "user_msg_" + name)
+                                .put("imgfile", imgPath);
                         presenter.modifyUserMsg(name);
                     } catch (Exception e) {
                         //显示出错弹窗
                         showModifyMsgFail();
                         e.printStackTrace();
                     }
-                }else {
-                //显示出错弹窗
+                } else {
+                    //显示出错弹窗
                     showModifyMsgFail();
                 }
                 break;
@@ -222,7 +254,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     /**
      * 显示修改信息失败弹窗
      */
-    private void showModifyMsgFail(){
+    private void showModifyMsgFail() {
         new CircleDialog.Builder()
                 .setCanceledOnTouchOutside(false)
                 .setCancelable(false)
@@ -237,7 +269,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
                     params.padding = new int[]{100, 0, 100, 50};
                 })
                 .setNegative("取消", null)
-                .setPositive("确定", v ->{
+                .setPositive("确定", v -> {
                             loginSuccess();
                         }
                 )

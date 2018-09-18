@@ -19,9 +19,11 @@ public class BaseModel<T> implements Serializable {
         this.msg = msg;
         this.data = data;
     }
-    public boolean isSuccess(){
-        return code == 200||code==199;
+
+    public boolean isSuccess() {
+        return code == 200 || code == 199;
     }
+
     public int getCode() {
         return code;
     }

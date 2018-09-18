@@ -12,11 +12,9 @@ import javax.crypto.spec.DESKeySpec;
 
 
 public class DesUtil {
-    private static final String KEY_ALGORITHM = "des";
-
-    private static final String CIPHER_ALGORITHM_ECB = "DES/ECB/PKCS5Padding";
-
     public static final String ENCODING = "UTF-8";
+    private static final String KEY_ALGORITHM = "des";
+    private static final String CIPHER_ALGORITHM_ECB = "DES/ECB/PKCS5Padding";
 
     public static void main(String[] args) throws Exception {
         //调试加密解密 key最多为8个字符
@@ -46,8 +44,9 @@ public class DesUtil {
 
     /**
      * des加密
+     *
      * @param data 加密数据
-     * @param key 解密密匙
+     * @param key  解密密匙
      * @return
      * @throws Exception
      */
@@ -57,8 +56,8 @@ public class DesUtil {
         cipher.init(Cipher.ENCRYPT_MODE, k);
         String str;
         try {
-             str = Base64.encodeToString(cipher.doFinal(data.getBytes(ENCODING)), Base64.DEFAULT);
-        }catch (Exception e){
+            str = Base64.encodeToString(cipher.doFinal(data.getBytes(ENCODING)), Base64.DEFAULT);
+        } catch (Exception e) {
             return null;
         }
         return str;
@@ -66,8 +65,9 @@ public class DesUtil {
 
     /**
      * des解密
+     *
      * @param data 加密数据
-     * @param key 解密密匙
+     * @param key  解密密匙
      * @return
      * @throws Exception
      */
@@ -77,8 +77,8 @@ public class DesUtil {
         cipher.init(Cipher.DECRYPT_MODE, k);
         byte[] bytes;
         try {
-             bytes = cipher.doFinal(Base64.decode(data.getBytes(ENCODING), Base64.DEFAULT));
-        }catch (Exception e){
+            bytes = cipher.doFinal(Base64.decode(data.getBytes(ENCODING), Base64.DEFAULT));
+        } catch (Exception e) {
             return null;
         }
         return new String(bytes, ENCODING);

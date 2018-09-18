@@ -25,6 +25,7 @@ public class FileUtils {
     /**
      * 在初始化时创建APP所需要的基础文件夹
      * 在6.0以上版本时需要进行权限申请
+     *
      * @param context 上下文
      */
     public static void init(Context context) {
@@ -35,7 +36,8 @@ public class FileUtils {
     /**
      * 创建文件夹
      * 在6.0以上版本时需要进行权限申请
-     * @param context 上下文
+     *
+     * @param context     上下文
      * @param fileDirName 文件夹名字
      */
     public static void createFileDir(Context context, String fileDirName) {
@@ -65,6 +67,7 @@ public class FileUtils {
 
     /**
      * 在没有sdcard时获取内部存储路径
+     *
      * @return
      */
     public static String getInternalPath(Context context) {
@@ -74,6 +77,7 @@ public class FileUtils {
 
     /**
      * 检测是否SDCard是否存在
+     *
      * @return true：存在 false：不存在
      */
     public static boolean isExistSDCard() {

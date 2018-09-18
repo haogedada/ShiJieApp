@@ -26,8 +26,8 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
  */
 
 public class ApiRetrofit {
-    public final String ROOTURL = Constants.requestRootURL.RootURL.getName();
     private static ApiRetrofit apiRetrofit;
+    public final String ROOTURL = Constants.requestRootURL.RootURL.getName();
     private Retrofit retrofit;
     private OkHttpClient client;
     private ApiServer apiServer;
@@ -43,14 +43,18 @@ public class ApiRetrofit {
         public Response intercept(Chain chain) throws IOException {
             Request originalRequest = chain.request();
             Request.Builder builder = originalRequest.newBuilder();
-            String authorization= (String) new SharedPreferencesHelper(App.getApplication(),"user_token")
-                    .getSharedPreference("token",null);
-            //是否有保存的token
-            if (authorization!=null&&!authorization.equals(" ")){
-                //请求头添加token
-                builder.addHeader("Authorization", authorization);
+            String authorization = (String) new SharedPreferencesHelper(App.getApplication(), "user_token")
+                    .getSharedPreference("token", null);
+            //判断是否是登录请求
+            if (!originalRequest.toString().contains("login?username=")) {
+                //是否有保存的token
+                if (authorization != null && !authorization.equals(" ")) {
+                    //请求头添加token
+                    builder.addHeader("Authorization", authorization);
+                }
             }
-           Request.Builder requestBuilder = builder.method(originalRequest.method(), originalRequest.body());
+
+            Request.Builder requestBuilder = builder.method(originalRequest.method(), originalRequest.body());
             Request request = requestBuilder.build();
             long startTime = System.currentTimeMillis();
             Response response = chain.proceed(request);
@@ -58,17 +62,17 @@ public class ApiRetrofit {
             long duration = endTime - startTime;
             MediaType mediaType = response.body().contentType();
             String content = response.body().string();
-            String token=response.header("authorization");
+            String token = response.header("authorization");
             Log.e(TAG, "----------Request Start----------------");
-            Log.e(TAG, "| " + request.toString() +"|"+ request.headers().toString());
+            Log.e(TAG, "| " + request.toString() + "|" + request.headers().toString());
             Log.e(TAG, "|获取失效token:" + response.header("authorization"));
             Log.e(TAG, "| Response:" + content);
             Log.e(TAG, "----------Request End:" + duration + "毫秒----------");
-            if( token!=null&&!token.equals(" ")){
+            if (token != null && !token.equals(" ")) {
                 //token失效 刷新token即保存token
-                new SharedPreferencesHelper(App.getApplication(),"user_token")
-                        .put("token",token);
-                Log.e(TAG, "intercept: "+token);
+                new SharedPreferencesHelper(App.getApplication(), "user_token")
+                        .put("token", token);
+                Log.e(TAG, "token: " + token);
             }
             return response.newBuilder()
                     .body(ResponseBody.create(mediaType, content))

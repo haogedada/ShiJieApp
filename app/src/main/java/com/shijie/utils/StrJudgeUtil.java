@@ -5,7 +5,7 @@ public class StrJudgeUtil {
 
     //判断是否是合法字符串
     public static boolean isCorrectStr(String str) {
-        if (str.contains(" ")){
+        if (str.contains(" ")) {
             return false;
         }
         return str != null && !str.equals(" ") && str.length() > 0;

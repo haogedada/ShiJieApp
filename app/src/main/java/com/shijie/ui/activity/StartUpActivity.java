@@ -16,6 +16,7 @@ import com.shijie.utils.SharedPreferencesHelper;
 public class StartUpActivity extends AppCompatActivity {
 
     private TextView txViewTime;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +37,7 @@ public class StartUpActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
             view.setFitsSystemWindows(true);
         }
-        txViewTime=findViewById(R.id.text_view_time);
+        txViewTime = findViewById(R.id.text_view_time);
         init();
         ActivityUtils.addActivity(this);
     }
@@ -45,11 +46,11 @@ public class StartUpActivity extends AppCompatActivity {
     /**
      * 第一次启动
      */
-    private void fristStartUp(){
-        boolean isFirst=(boolean)new SharedPreferencesHelper(this,"first_start_up").getSharedPreference("isFirst",true);
+    private void fristStartUp() {
+        boolean isFirst = (boolean) new SharedPreferencesHelper(this, "first_start_up").getSharedPreference("isFirst", true);
         //如果是第一次启动可以在此进行一些操作，例如初始化数据库等；
-        if (isFirst){
-            Intent intent=new Intent(StartUpActivity.this,IntroActivity.class);
+        if (isFirst) {
+            Intent intent = new Intent(StartUpActivity.this, IntroActivity.class);
             startActivity(intent);
         }
     }
@@ -57,7 +58,7 @@ public class StartUpActivity extends AppCompatActivity {
     /**
      * 做一些初始化
      */
-    private void init(){
+    private void init() {
         fristStartUp();
         permissionApplication();
     }
@@ -65,18 +66,18 @@ public class StartUpActivity extends AppCompatActivity {
     /**
      * 加载页面倒计时
      */
-    private void ountDown(){
+    private void ountDown() {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                int i=3;
-                while (i>=0) {
+                int i = 3;
+                while (i >= 0) {
                     try {
                         int finalI = i;
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                txViewTime.setText(finalI+" ");
+                                txViewTime.setText(finalI + " ");
                             }
                         });
                         Thread.sleep(1000);
@@ -88,29 +89,29 @@ public class StartUpActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Intent intent=new Intent(StartUpActivity.this,LoginActivity.class);
+                        Intent intent = new Intent(StartUpActivity.this, LoginActivity.class);
                         startActivity(intent);
                     }
                 });
-                }
-                }).start();
+            }
+        }).start();
     }
 
     /**
      * 一些权限申请，用户拒绝将退出软件
      */
     public void permissionApplication() {
-       new PermissionHelper(this, getSupportFragmentManager()) {
-           @Override
-           public void success() {
-               ountDown();
-           }
+        new PermissionHelper(this, getSupportFragmentManager()) {
+            @Override
+            public void success() {
+                ountDown();
+            }
 
-           @Override
-           public void fail() {
-               ountDown();
-           }
-       }.allUsePermission();
+            @Override
+            public void fail() {
+                ountDown();
+            }
+        }.allUsePermission();
     }
 
     @Override

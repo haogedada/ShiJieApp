@@ -51,27 +51,30 @@ public class IntroActivity extends AppIntro {
 
     /**
      * 点击跳过的点击事件
+     *
      * @param currentFragment
      */
     @Override
     public void onSkipPressed(Fragment currentFragment) {
         super.onSkipPressed(currentFragment);
-        new SharedPreferencesHelper(this,"first_start_up").put("isFirst",false);
+        new SharedPreferencesHelper(this, "first_start_up").put("isFirst", false);
         Intent intent = new Intent(IntroActivity.this, LoginActivity.class);
         startActivity(intent);
     }
 
     /**
      * 点击完成的点击事件
+     *
      * @param currentFragment
      */
     @Override
     public void onDonePressed(Fragment currentFragment) {
         super.onDonePressed(currentFragment);
-        new SharedPreferencesHelper(this,"first_start_up").put("isFirst",false);
+        new SharedPreferencesHelper(this, "first_start_up").put("isFirst", false);
         Intent intent = new Intent(IntroActivity.this, LoginActivity.class);
         startActivity(intent);
     }
+
     @Override
     public void onSlideChanged(@Nullable Fragment oldFragment, @Nullable Fragment newFragment) {
         super.onSlideChanged(oldFragment, newFragment);

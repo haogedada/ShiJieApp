@@ -11,9 +11,11 @@ public class Constants {
     public enum requestRootURL {
         RootURL("http://www.haogedada.top/apiep/");
         private final String url;
+
         requestRootURL(String url) {
             this.url = url;
         }
+
         public String getName() {
             return url;
         }
@@ -72,7 +74,6 @@ public class Constants {
     }
 
 
-
     /**
      * 视频类型
      */
@@ -99,14 +100,15 @@ public class Constants {
             this.value = value;
         }
 
-       public static videoType getVideoType(String typeName) {
+        public static videoType getVideoType(String typeName) {
             for (int i = 0; i < values().length; i++) {
                 if (values()[i].getName().equals(typeName)) {
                     return values()[i];
                 }
             }
-          return null;
+            return null;
         }
+
         public Integer getIndex() {
             return index;
         }

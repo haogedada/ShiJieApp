@@ -20,6 +20,7 @@ public interface ApiServer {
 
     /**
      * 根据视频id获取视频请求接口
+     *
      * @param videoId
      * @return
      */
@@ -28,6 +29,7 @@ public interface ApiServer {
 
     /**
      * 根据视频id获取评论请求接口
+     *
      * @param videoId
      * @return
      */
@@ -36,6 +38,7 @@ public interface ApiServer {
 
     /**
      * 登录接口
+     *
      * @param name
      * @param pwd
      * @return
@@ -45,6 +48,7 @@ public interface ApiServer {
 
     /**
      * 修改用户资料请求接口
+     *
      * @param multipartBody
      * @return
      */
@@ -53,9 +57,10 @@ public interface ApiServer {
 
     /**
      * 获取首页视频请求接口
+     *
      * @param pageSize
      * @return
      */
     @GET("app/homepage/{pagesize}")
-    Observable<BaseModel> getHomePage(@Path("pagesize")int pageSize);
+    Observable<BaseModel> getHomePage(@Path("pagesize") int pageSize);
 }

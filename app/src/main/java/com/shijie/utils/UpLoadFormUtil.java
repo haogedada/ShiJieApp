@@ -24,8 +24,8 @@ public class UpLoadFormUtil {
         MultipartBody.Builder builder = new MultipartBody.Builder();
         builder.setType(MultipartBody.FORM);
         for (File file : files) {
-            if (!FileUtil.isImgFile(file.getName())&&!FileUtil.isVedioFile(file.getName())){
-                Log.e("调试", "文件格式不合法" );
+            if (!FileUtil.isImgFile(file.getName()) && !FileUtil.isVedioFile(file.getName())) {
+                Log.e("调试", "文件格式不合法");
             }
             RequestBody requestBody = RequestBody.create(MediaType.parse("image/png"), file);
             builder.addFormDataPart("imgfile", file.getName(), requestBody);
@@ -35,7 +35,7 @@ public class UpLoadFormUtil {
             Map.Entry entry = (Map.Entry) it.next();
             String key = (String) entry.getKey();
             String value = (String) entry.getValue();
-            builder.addFormDataPart(key,value);
+            builder.addFormDataPart(key, value);
         }
         builder.setType(MultipartBody.FORM);
         MultipartBody multipartBody = builder.build();

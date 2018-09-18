@@ -16,16 +16,17 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class RetrofitManager {
-    private Retrofit mRetrofit;
-    private String baseUrl;
-    private static RetrofitManager mRetrofitManager;
+    private final static String ROOTURL = Constants.requestRootURL.RootURL.getName();
     public static OkHttpClient okHttpClient;
-    private final static String ROOTURL= Constants.requestRootURL.RootURL.getName();
+    private static RetrofitManager mRetrofitManager;
 
     //静态块,获取OkHttpClient对象
     static {
         getOkHttpClient();
     }
+
+    private Retrofit mRetrofit;
+    private String baseUrl;
 
     private RetrofitManager(String baseUrl) {
         this.baseUrl = baseUrl;

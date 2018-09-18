@@ -5,7 +5,7 @@ import com.shijie.base.BaseView;
 /**
  * mvp中的View的定义
  * 用户登录界面用户的操作行为的定义
- *
+ * <p>
  * Created by haoge on 2018/8/15.
  */
 

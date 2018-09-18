@@ -8,7 +8,8 @@ public class HomePageBean {
     private Object homePageHead;
     private List<TypeListBean> videoTypeList;
     private Object tail;
-    public HomePageBean(){
+
+    public HomePageBean() {
 
     }
 

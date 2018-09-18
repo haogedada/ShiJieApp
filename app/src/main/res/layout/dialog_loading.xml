@@ -20,6 +20,7 @@
             android:id="@+id/calendar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
         <ImageView
             android:id="@+id/iv_load_image"
             android:layout_width="wrap_content"

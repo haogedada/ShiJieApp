@@ -1,7 +1,5 @@
 package com.shijie.ui.activity;
 
-import android.util.Log;
-
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.shijie.R;
@@ -20,6 +18,7 @@ public class PlayerVideoActivity extends BaseActivity<PlayerVideoPresenter> impl
 
     private int videoId;
     private JZVideoPlayerStandard jzVideoPlayerStandard;
+
     @Override
     protected PlayerVideoPresenter createPresenter() {
         return new PlayerVideoPresenter(this);
@@ -32,32 +31,28 @@ public class PlayerVideoActivity extends BaseActivity<PlayerVideoPresenter> impl
 
     @Override
     protected void initData() {
-        videoId = getIntent().getIntExtra("videoId",0);
+        videoId = getIntent().getIntExtra("videoId", 0);
         presenter.getVideoById(videoId);
     }
 
     @Override
     protected void initView() {
-         jzVideoPlayerStandard = findViewById(R.id.video_player);
+        jzVideoPlayerStandard = findViewById(R.id.video_player);
     }
-
-    @Override
-    public void onNetworkViewRefresh() {
-        presenter.getVideoById(videoId);
-    }
-
     @Override
     public void reconnectNetwork() {
+        initData();
     }
+
     @Override
     public void showView(BaseModel baseModel) {
-        String videoStr=new Gson().toJson(baseModel.getData());
-        VideoBean videoBean= new Gson().fromJson(videoStr,VideoBean.class);
-        Log.e("调试", "showView: "+videoBean.getVideoUrl() );
+        String videoStr = new Gson().toJson(baseModel.getData());
+        VideoBean videoBean = new Gson().fromJson(videoStr, VideoBean.class);
         jzVideoPlayerStandard.setUp(videoBean.getVideoUrl(),
-                SCREEN_WINDOW_NORMAL,videoBean.getVideoTitle());
+                SCREEN_WINDOW_NORMAL, videoBean.getVideoTitle());
         Glide.with(this).load(videoBean.getVideoCoverUrl()).into(jzVideoPlayerStandard.thumbImageView);
     }
+
     @Override
     public void onBackPressed() {
         if (JZVideoPlayer.backPress()) {
@@ -65,6 +60,7 @@ public class PlayerVideoActivity extends BaseActivity<PlayerVideoPresenter> impl
         }
         super.onBackPressed();
     }
+
     @Override
     protected void onPause() {
         super.onPause();

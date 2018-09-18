@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hjm="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:hjm="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <include layout="@layout/view_network_state" />
@@ -41,7 +41,6 @@
             hjm:tab_selected_color="#2784E7"
 
             hjm:tab_unselected_color="#282828">
-
 
 
         </com.hjm.bottomtabbar.BottomTabBar>

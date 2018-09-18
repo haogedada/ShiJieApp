@@ -1,68 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <com.shijie.wedget.TitleView
         android:id="@+id/submit_title_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </com.shijie.wedget.TitleView>
+        android:layout_height="wrap_content"></com.shijie.wedget.TitleView>
 
     <EditText
         android:id="@+id/edit_name"
-        android:hint="请输入用户名"
-        android:textSize="16sp"
-        android:inputType="text"
-        android:textColorHint="#CDCDC1"
-        android:gravity="center"
-        android:background="@drawable/edit_text"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_above="@+id/edid_password"
-        android:layout_alignLeft="@+id/edid_password"
-        android:layout_alignStart="@+id/edid_password"
-        android:layout_alignRight="@+id/edid_password"
         android:layout_alignEnd="@+id/edid_password"
+        android:layout_alignLeft="@+id/edid_password"
+        android:layout_alignRight="@+id/edid_password"
+        android:layout_alignStart="@+id/edid_password"
         android:layout_marginBottom="15dp"
-        />
+        android:background="@drawable/edit_text"
+        android:gravity="center"
+        android:hint="请输入用户名"
+        android:inputType="text"
+        android:textColorHint="#CDCDC1"
+        android:textSize="16sp" />
 
     <EditText
         android:id="@+id/edid_password"
-        android:background="@drawable/edit_text"
-        android:hint="请输入密码"
-        android:inputType="textPassword"
-        android:textSize="16sp"
-        android:gravity="center"
-        android:layout_marginTop="20dp"
-        android:textColorHint="#CDCDC1"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_centerInParent="true"
         android:layout_marginLeft="100dp"
-      />
-
+        android:layout_marginTop="20dp"
+        android:background="@drawable/edit_text"
+        android:gravity="center"
+        android:hint="请输入密码"
+        android:inputType="textPassword"
+        android:textColorHint="#CDCDC1"
+        android:textSize="16sp" />
 
 
     <Button
-        android:text="登录"
+        android:id="@+id/btn_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/edid_password"
         android:layout_alignLeft="@+id/edid_password"
+        android:layout_below="@+id/edid_password"
         android:layout_marginTop="22dp"
-        android:id="@+id/btn_login"/>
+        android:text="登录" />
 
     <Button
-        android:text="注册"
+        android:id="@+id/btn_regdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/btn_login"
         android:layout_alignBottom="@+id/btn_login"
-        android:layout_toRightOf="@id/btn_login"
-        android:layout_marginLeft="50dp"
+        android:layout_alignTop="@+id/btn_login"
         android:layout_below="@+id/edid_password"
-        android:id="@+id/btn_regdit"/>
-
+        android:layout_marginLeft="50dp"
+        android:layout_toRightOf="@id/btn_login"
+        android:text="注册" />
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_below="@id/btn_login"
+    android:layout_alignLeft="@+id/btn_login"
+    android:layout_marginTop="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <CheckBox
+        android:id="@+id/remember_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:text="记住密码"/>
+</LinearLayout>
 </RelativeLayout>
