@@ -109,6 +109,12 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
         super.showNetworkError(msg);
     }
 
+    //刷新网络
+    @Override
+    public void onNetworkViewRefresh() {
+
+    }
+
     @Override
     public void reconnectNetwork() {
         login();

@@ -6,10 +6,10 @@ package com.shijie.constant;
 public class Constants {
 
     /**
-     * 请求跟地址URL
+     * 请求根地址URL
      */
     public enum requestRootURL {
-        RootURL("http://www.haogedada.top/api/");
+        RootURL("http://www.haogedada.top/apiep/");
         private final String url;
         requestRootURL(String url) {
             this.url = url;

@@ -13,8 +13,8 @@ public interface LoginView extends BaseView {
 
     void showVerifyFailed();//信息验证失败,账号或密码有误
 
-    void loginSuccess();
+    void loginSuccess();//登录成功
 
-    void fristLogin();
+    void fristLogin();//第一次登陆视图
 
 }

@@ -10,5 +10,5 @@ import java.util.List;
  */
 
 public interface HomePageView extends BaseView {
-    void showView(List<MySection> list);
+    void showView(List<MySection> list);//显示视图
 }

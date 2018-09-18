@@ -56,6 +56,6 @@ public interface ApiServer {
      * @param pageSize
      * @return
      */
-    @GET(" app/homepage/{pagesize}")
+    @GET("app/homepage/{pagesize}")
     Observable<BaseModel> getHomePage(@Path("pagesize")int pageSize);
 }

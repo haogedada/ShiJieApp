@@ -1,5 +1,7 @@
 package com.shijie.mvp.presenter;
 
+import android.util.Log;
+
 import com.shijie.base.BaseModel;
 import com.shijie.base.BaseObserver;
 import com.shijie.base.BasePresenter;

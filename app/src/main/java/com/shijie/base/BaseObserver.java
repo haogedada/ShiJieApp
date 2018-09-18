@@ -1,6 +1,8 @@
 package com.shijie.base;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
+import com.shijie.utils.DesUtil;
 
 import org.json.JSONException;
 
@@ -11,6 +13,7 @@ import java.text.ParseException;
 
 import io.reactivex.observers.DisposableObserver;
 import retrofit2.HttpException;
+
 
 /**
  *
@@ -36,6 +39,11 @@ public abstract class BaseObserver<T> extends DisposableObserver<T> {
      */
     public static final int CONNECT_TIMEOUT = 1004;
 
+    /**
+     * 密匙
+     */
+    private final static String key = "haogedad";
+
 
     public BaseObserver(BaseView view) {
         this.view = view;
@@ -48,15 +56,26 @@ public abstract class BaseObserver<T> extends DisposableObserver<T> {
         }
     }
 
+    /**
+     * 网络请求结果对象
+     * @param o
+     */
     @Override
     public void onNext(T o) {
         try {
             BaseModel model = (BaseModel) o;
-            if (model.getCode() == 200||model.getCode() ==105||model.getCode()==199||model.getCode()==401) {
+            if (model.getCode() == 200 || model.getCode() == 105 || model.getCode() == 199 || model.getCode() == 401) {
+                String s = model.getData().toString();
+                //获取到的数据进行解密
+                String data =  DesUtil.decrypt(s, key);
+                if (data!=null){
+                    Object obj=new Gson().fromJson(data,Object.class);
+                    model.setData(obj);
+                }
                 onSuccess(model);
-            }else {
+            } else {
                 if (view != null) {
-                    view.onErrorCode(model);
+                    view.showError(new Gson().toJson(model.getData()));
                 }
             }
         } catch (Exception e) {

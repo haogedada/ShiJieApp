@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -40,7 +39,7 @@ import com.shijie.wedget.NetworkStateView;
  *
  * @param <P>
  */
-public abstract class BaseActivity<P extends BasePresenter> extends AppCompatActivity implements BaseView, NetworkStateView.OnRefreshListener {
+public abstract class BaseActivity<P extends BasePresenter> extends AppCompatActivity implements  NetworkStateView.OnRefreshListener,BaseView {
     public Context context;
     public Toast toast;
     protected P presenter;
@@ -111,7 +110,6 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
             view.setFitsSystemWindows(true);
         }
-
         //加载子类Activity的布局
         initDefaultView(layoutResID);
     }
@@ -244,24 +242,19 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
      * @param s
      */
     public void showToast(String s) {
-
         if (toast == null) {
             toast = Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG);
         }
         toast.show();
     }
 
+    /**
+     * 显示报错信息
+     * @param msg
+     */
     @Override
     public void showError(String msg) {
         showToast(msg);
-    }
-
-    @Override
-    public void onErrorCode(BaseModel model) {
-        //用户未登录或者token失效
-        if (model.getCode() == 401) {
-
-        }
     }
 
     /**
@@ -278,6 +271,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
             @Override
             public void NetwordTips() {
                 //TODO 网络提示
+
             }
         };
         IntentFilter filter = new IntentFilter();
@@ -363,10 +357,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     /**
      * 重新请求网络
      */
-    public void onNetworkViewRefresh() {
-        Log.e("调试", "onNetworkViewRefresh: 正在重新请求网络");
-    }
-
+    public abstract void onNetworkViewRefresh();
     /**
      * 重新发起请求接口
      */

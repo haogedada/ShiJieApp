@@ -33,7 +33,6 @@ public class HomePageActivity extends BaseActivity<HomePagePresenter> implements
 
     @Override
     protected void initData() {
-
       presenter.getHomePage(4);
     }
 
@@ -63,6 +62,11 @@ public class HomePageActivity extends BaseActivity<HomePagePresenter> implements
     @Override
     public void showNetworkError(String errMsg) {
         super.showNetworkError(errMsg);
+    }
+
+    @Override
+    public void onNetworkViewRefresh() {
+        presenter.getHomePage(4);
     }
 
     @Override

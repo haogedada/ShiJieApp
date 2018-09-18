@@ -42,6 +42,11 @@ public class PlayerVideoActivity extends BaseActivity<PlayerVideoPresenter> impl
     }
 
     @Override
+    public void onNetworkViewRefresh() {
+        presenter.getVideoById(videoId);
+    }
+
+    @Override
     public void reconnectNetwork() {
     }
     @Override

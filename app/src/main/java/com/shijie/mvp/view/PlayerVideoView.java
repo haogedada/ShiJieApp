@@ -8,5 +8,5 @@ import com.shijie.base.BaseView;
  */
 
 public interface PlayerVideoView extends BaseView {
-    void showView(BaseModel baseModel);
+    void showView(BaseModel baseModel);//显示视图
 }
